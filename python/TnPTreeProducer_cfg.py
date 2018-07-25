@@ -112,9 +112,9 @@ options['DEBUG']                = cms.bool(False)
 options['isMC']                 = cms.bool(False)
 options['UseCalibEn']           = varOptions.calibEn
 
-options['addSUSY']               = cms.bool(True)
-if options['useAOD']: 
-    options['addSUSY']               = cms.bool(False)
+#options['addSUSY']               = cms.bool(True)
+#if options['useAOD']: 
+#    options['addSUSY']               = cms.bool(False)
 
 if (varOptions.isMC):
     options['isMC']                = cms.bool(True)
@@ -150,8 +150,11 @@ if varOptions.GT != "auto" :
 from EgammaAnalysis.TnPTreeProducer.etc.tnpInputTestFiles_cff import filesMiniAOD_Preliminary2017 as inputs
 if options['useAOD'] : from EgammaAnalysis.TnPTreeProducer.etc.tnpInputTestFiles_cff import filesAOD_23Sep2016 as inputs #switch to 2017 samples if want to cmsRun on AOD
     
-options['INPUT_FILE_NAME'] = inputs['data']
-if varOptions.isMC:  options['INPUT_FILE_NAME'] =  inputs['mc']
+#options['INPUT_FILE_NAME'] = inputs['data']
+options['INPUT_FILE_NAME'] = cms.untracked.vstring('file:/afs/cern.ch/work/h/helee/miniAOD_V2/data/F8D7874B-A937-E811-9D5D-008CFAE4535C.root') 
+#if varOptions.isMC:  options['INPUT_FILE_NAME'] =  inputs['mc']
+if varOptions.isMC:  options['INPUT_FILE_NAME'] = cms.untracked.vstring('file:/afs/cern.ch/work/h/helee/miniAOD_V2/mc/madgraph/F2283B5C-6044-E811-B61D-0025905B859A.root')
+#if varOptions.isMC:  options['INPUT_FILE_NAME'] = cms.untracked.vstring('file:/afs/cern.ch/work/h/helee/miniAOD_V2/mc/amcatnlo/FEFADA2F-8C44-E811-914F-B496910A8618.root')
 
 
 ###################################################################
@@ -197,7 +200,7 @@ if options['DoPhoID']   : print "  -- Producing photon SF tree      -- "
 ## Define sequences and TnP pairs
 ###################################################################
 process.cand_sequence = cms.Sequence( process.init_sequence + process.tag_sequence )
-if options['addSUSY']                         : process.cand_sequence += process.susy_ele_sequence
+#if options['addSUSY']                         : process.cand_sequence += process.susy_ele_sequence
 if options['DoEleID'] or options['DoTrigger'] : process.cand_sequence += process.ele_sequence
 if options['DoPhoID']                         : process.cand_sequence += process.pho_sequence
 if options['DoTrigger']                       : process.cand_sequence += process.hlt_sequence
@@ -297,17 +300,17 @@ if not options['useAOD'] :
     setattr( process.tnpEleIDs.flags , 'passingHLTsafe', cms.InputTag("probeEleHLTsafe" ) )
 
 # Add SUSY variables to the "variables", add SUSY IDs to the "flags"
-if options['addSUSY'] :
-    setattr( process.tnpEleIDs.variables , 'el_miniIsoChg', cms.string("userFloat('miniIsoChg')") )
-    setattr( process.tnpEleIDs.variables , 'el_miniIsoAll', cms.string("userFloat('miniIsoAll')") )
-    setattr( process.tnpEleIDs.variables , 'el_ptRatio', cms.string("userFloat('ptRatio')") )
-    setattr( process.tnpEleIDs.variables , 'el_ptRel', cms.string("userFloat('ptRel')") )
-    setattr( process.tnpEleIDs.variables , 'el_MVATTH', cms.InputTag("electronMVATTH") )   
-    setattr( process.tnpEleIDs.variables , 'el_sip3d', cms.InputTag("susyEleVarHelper:sip3d") )
-    def addFlag(name):
-        setattr( process.tnpEleIDs.flags, 'passing'+name, cms.InputTag('probes'+name ) )
-    from EgammaAnalysis.TnPTreeProducer.electronsExtrasSUSY_cff  import workingPoints
-    for wp in workingPoints: addFlag(wp)
+#if options['addSUSY'] :
+#    setattr( process.tnpEleIDs.variables , 'el_miniIsoChg', cms.string("userFloat('miniIsoChg')") )
+#    setattr( process.tnpEleIDs.variables , 'el_miniIsoAll', cms.string("userFloat('miniIsoAll')") )
+#    setattr( process.tnpEleIDs.variables , 'el_ptRatio', cms.string("userFloat('ptRatio')") )
+#    setattr( process.tnpEleIDs.variables , 'el_ptRel', cms.string("userFloat('ptRel')") )
+#    setattr( process.tnpEleIDs.variables , 'el_MVATTH', cms.InputTag("electronMVATTH") )   
+#    setattr( process.tnpEleIDs.variables , 'el_sip3d', cms.InputTag("susyEleVarHelper:sip3d") )
+#    def addFlag(name):
+#        setattr( process.tnpEleIDs.flags, 'passing'+name, cms.InputTag('probes'+name ) )
+#    from EgammaAnalysis.TnPTreeProducer.electronsExtrasSUSY_cff  import workingPoints
+#    for wp in workingPoints: addFlag(wp)
 
 
 tnpSetup.customize( process.tnpEleTrig , options )
@@ -322,7 +325,10 @@ if (options['DoRECO'])   : process.tree_sequence *= process.tnpEleReco
 if (options['DoEleID'])  : process.tree_sequence *= process.tnpEleIDs
 if (options['DoPhoID'])  : process.tree_sequence *= process.tnpPhoIDs
 
-
+from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
+setupEgammaPostRecoSeq(process,
+                       runVID=False, #saves CPU time by not needlessly re-running VID
+                       era='2017-Nov17ReReco')
 ##########################################################################
 ## PATHS
 ##########################################################################
@@ -335,11 +341,12 @@ if (not options['DEBUG']):
     process.outpath.remove(process.out)
 
 process.p = cms.Path(
+        process.egammaPostRecoSeq +
         process.hltFilter         +
         process.cand_sequence     + 
         process.tnpPairs_sequence +
         process.mc_sequence       +
-        process.tree_sequence 
+        process.tree_sequence     
         )
 
 process.TFileService = cms.Service(

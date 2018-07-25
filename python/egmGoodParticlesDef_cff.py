@@ -58,10 +58,10 @@ def setGoodParticlesMiniAOD(process, options):
 
 
     ########################### Extra variables for SUSY IDs ############
-    if options['addSUSY']: 
-        import EgammaAnalysis.TnPTreeProducer.electronsExtrasSUSY_cff  as eleSusyID
-        eleSusyID.addSusyIDs( process, options )
-        options['ELECTRON_COLL']        = "slimmedElectronsWithUserData"
+#    if options['addSUSY']: 
+#        import EgammaAnalysis.TnPTreeProducer.electronsExtrasSUSY_cff  as eleSusyID
+#        eleSusyID.addSusyIDs( process, options )
+#        options['ELECTRON_COLL']        = "slimmedElectronsWithUserData"
 
     process.eleVarHelper = cms.EDProducer("PatElectronVariableHelper",
                                           probes           = cms.InputTag(options['ELECTRON_COLL']),
