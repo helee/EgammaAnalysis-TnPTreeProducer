@@ -112,9 +112,9 @@ options['DEBUG']                = cms.bool(False)
 options['isMC']                 = cms.bool(False)
 options['UseCalibEn']           = varOptions.calibEn
 
-#options['addSUSY']               = cms.bool(True)
-#if options['useAOD']: 
-#    options['addSUSY']               = cms.bool(False)
+options['addSUSY']               = cms.bool(False)
+if options['useAOD']: 
+    options['addSUSY']               = cms.bool(False)
 
 if (varOptions.isMC):
     options['isMC']                = cms.bool(True)
@@ -126,18 +126,20 @@ if (varOptions.isMC):
 #    options['HLTFILTERTOMEASURE']  = cms.vstring("")
 #    options['TnPPATHS']            = cms.vstring("HLT_Ele27_eta2p1_WPTight_Gsf_v*") #FOR 2016
 #    options['TnPHLTTagFilters']    = cms.vstring("hltEle27erWPTightGsfTrackIsoFilter") #FOR 2016
-#     options['HLTFILTERTOMEASURE']  = cms.vstring("hltEle27erWPTightGsfTrackIsoFilter") #FOR 2016
+#    options['HLTFILTERTOMEASURE']  = cms.vstring("hltEle27erWPTightGsfTrackIsoFilter") #FOR 2016
     options['TnPPATHS']            = cms.vstring("HLT_Ele32_WPTight_Gsf_L1DoubleEG_v*")
     options['TnPHLTTagFilters']    = cms.vstring("hltEle32L1DoubleEGWPTightGsfTrackIsoFilter","hltEGL1SingleEGOrFilter")
     options['TnPHLTProbeFilters']  = cms.vstring()
-    options['HLTFILTERTOMEASURE']  = cms.vstring("hltEle32L1DoubleEGWPTightGsfTrackIsoFilter")
+#    options['HLTFILTERTOMEASURE']  = cms.vstring("hltEle32L1DoubleEGWPTightGsfTrackIsoFilter")
+    options['HLTFILTERTOMEASURE']  = cms.vstring()
     options['GLOBALTAG']           = 'auto:run2_mc'
 else:
     options['OUTPUT_FILE_NAME']    = "TnPTree_data.root"
     options['TnPPATHS']            = cms.vstring("HLT_Ele32_WPTight_Gsf_L1DoubleEG_v*")
     options['TnPHLTTagFilters']    = cms.vstring("hltEle32L1DoubleEGWPTightGsfTrackIsoFilter","hltEGL1SingleEGOrFilter")
     options['TnPHLTProbeFilters']  = cms.vstring()
-    options['HLTFILTERTOMEASURE']  = cms.vstring("hltEle32L1DoubleEGWPTightGsfTrackIsoFilter")
+#    options['HLTFILTERTOMEASURE']  = cms.vstring("hltEle32L1DoubleEGWPTightGsfTrackIsoFilter")
+    options['HLTFILTERTOMEASURE']  = cms.vstring()
     options['GLOBALTAG']           = 'auto:run2_data'
 
 if varOptions.GT != "auto" :
@@ -200,7 +202,7 @@ if options['DoPhoID']   : print "  -- Producing photon SF tree      -- "
 ## Define sequences and TnP pairs
 ###################################################################
 process.cand_sequence = cms.Sequence( process.init_sequence + process.tag_sequence )
-#if options['addSUSY']                         : process.cand_sequence += process.susy_ele_sequence
+if options['addSUSY']                         : process.cand_sequence += process.susy_ele_sequence
 if options['DoEleID'] or options['DoTrigger'] : process.cand_sequence += process.ele_sequence
 if options['DoPhoID']                         : process.cand_sequence += process.pho_sequence
 if options['DoTrigger']                       : process.cand_sequence += process.hlt_sequence
@@ -300,17 +302,17 @@ if not options['useAOD'] :
     setattr( process.tnpEleIDs.flags , 'passingHLTsafe', cms.InputTag("probeEleHLTsafe" ) )
 
 # Add SUSY variables to the "variables", add SUSY IDs to the "flags"
-#if options['addSUSY'] :
-#    setattr( process.tnpEleIDs.variables , 'el_miniIsoChg', cms.string("userFloat('miniIsoChg')") )
-#    setattr( process.tnpEleIDs.variables , 'el_miniIsoAll', cms.string("userFloat('miniIsoAll')") )
-#    setattr( process.tnpEleIDs.variables , 'el_ptRatio', cms.string("userFloat('ptRatio')") )
-#    setattr( process.tnpEleIDs.variables , 'el_ptRel', cms.string("userFloat('ptRel')") )
-#    setattr( process.tnpEleIDs.variables , 'el_MVATTH', cms.InputTag("electronMVATTH") )   
-#    setattr( process.tnpEleIDs.variables , 'el_sip3d', cms.InputTag("susyEleVarHelper:sip3d") )
-#    def addFlag(name):
-#        setattr( process.tnpEleIDs.flags, 'passing'+name, cms.InputTag('probes'+name ) )
-#    from EgammaAnalysis.TnPTreeProducer.electronsExtrasSUSY_cff  import workingPoints
-#    for wp in workingPoints: addFlag(wp)
+if options['addSUSY'] :
+    setattr( process.tnpEleIDs.variables , 'el_miniIsoChg', cms.string("userFloat('miniIsoChg')") )
+    setattr( process.tnpEleIDs.variables , 'el_miniIsoAll', cms.string("userFloat('miniIsoAll')") )
+    setattr( process.tnpEleIDs.variables , 'el_ptRatio', cms.string("userFloat('ptRatio')") )
+    setattr( process.tnpEleIDs.variables , 'el_ptRel', cms.string("userFloat('ptRel')") )
+    setattr( process.tnpEleIDs.variables , 'el_MVATTH', cms.InputTag("electronMVATTH") )   
+    setattr( process.tnpEleIDs.variables , 'el_sip3d', cms.InputTag("susyEleVarHelper:sip3d") )
+    def addFlag(name):
+        setattr( process.tnpEleIDs.flags, 'passing'+name, cms.InputTag('probes'+name ) )
+    from EgammaAnalysis.TnPTreeProducer.electronsExtrasSUSY_cff  import workingPoints
+    for wp in workingPoints: addFlag(wp)
 
 
 tnpSetup.customize( process.tnpEleTrig , options )
@@ -325,10 +327,12 @@ if (options['DoRECO'])   : process.tree_sequence *= process.tnpEleReco
 if (options['DoEleID'])  : process.tree_sequence *= process.tnpEleIDs
 if (options['DoPhoID'])  : process.tree_sequence *= process.tnpPhoIDs
 
+# Scale and Smearing
 from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
 setupEgammaPostRecoSeq(process,
                        runVID=False, #saves CPU time by not needlessly re-running VID
                        era='2017-Nov17ReReco')
+
 ##########################################################################
 ## PATHS
 ##########################################################################

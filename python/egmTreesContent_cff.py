@@ -67,6 +67,8 @@ EleProbeVariablesToStore = cms.PSet(
     el_hoe_bc           = cms.string("hcalOverEcalBc"),
     el_eoverp_wES        = cms.string("(superCluster().rawEnergy+superCluster().preshowerEnergy)/gsfTrack().pMode()"),
     el_1overEminus1overP        = cms.string("abs(1-eSuperClusterOverP())/ecalEnergy()"),
+    el_hoe_barrel    = cms.InputTag("eleVarHelper:hoeLooseBarrel"),
+    el_hoe_endcap    = cms.InputTag("eleVarHelper:hoeLooseEndcap"),
 
     # mva id
 
@@ -74,7 +76,7 @@ EleProbeVariablesToStore = cms.PSet(
     el_hzzMVA80X     = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring16HZZV1Values"),
     el_noIsoMVA94X     = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Fall17NoIsoV1Values"),
     el_IsoMVA94X     = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Fall17IsoV1Values"),
-
+#    el_mva           = cms.InputTag("eleVarHelper:mva"),
      
     #isolation
     el_chIso         = cms.string("pfIsolationVariables().sumChargedHadronPt"),
@@ -100,6 +102,9 @@ EleProbeVariablesToStore = cms.PSet(
     el_dxy           = cms.InputTag("eleVarHelper:dxy"),
     el_3charge       = cms.string("chargeInfo().isGsfCtfScPixConsistent"),
     el_ecalDriven    = cms.string("ecalDrivenSeed"),
+    el_passConversionVeto = cms.InputTag("eleVarHelper:passConversionVeto"),
+    el_sip3d         = cms.InputTag("eleVarHelper:SIP3D"),
+    el_miniIso       = cms.InputTag("eleVarHelper:miniIso"),
 
     )
 
@@ -154,7 +159,7 @@ TagVariablesToStore = cms.PSet(
     sc_eta    = cms.string("-log(tan(superClusterPosition.theta/2))"),
     sc_abseta = cms.string("abs(-log(tan(superCluster.position.theta/2)))"),
 
-#    Ele_mHits         = cms.InputTag("eleVarHelper:missinghits"),
+    Ele_mHits         = cms.InputTag("eleVarHelper:missinghits"),
     Ele_dz            = cms.InputTag("eleVarHelper:dz"),
     Ele_dxy           = cms.InputTag("eleVarHelper:dxy"),
     Ele_nonTrigMVA80X    = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring16GeneralPurposeV1Values"),
@@ -164,7 +169,11 @@ TagVariablesToStore = cms.PSet(
 
     Ele_noIsoMVA94X   = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Fall17NoIsoV1Values"), 
     Ele_IsoMVA94X   = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Fall17IsoV1Values"),
+#    Ele_mva           = cms.InputTag("eleVarHelper:mva"),
 
+    Ele_passConversionVeto = cms.InputTag("eleVarHelper:passConversionVeto"),
+    Ele_sip3d         = cms.InputTag("eleVarHelper:SIP3D"),
+    Ele_miniIso       = cms.InputTag("eleVarHelper:miniIso"),
     )
 
 CommonStuffForGsfElectronProbe = cms.PSet(
@@ -185,7 +194,7 @@ CommonStuffForGsfElectronProbe = cms.PSet(
     #    pfMet = cms.InputTag("slimmedMETsNoHF"),
 
     pairFlags     =  cms.PSet(
-#    mass60to120 = cms.string("60 < mass < 120")
+    #mass60to120 = cms.string("60 < mass < 120")
         ),
     tagFlags       =  cms.PSet(),    
     

@@ -144,10 +144,10 @@ def setSequences(process, options):
             )
         process.init_sequence += process.enCalib_sequence
 
-#    if options['addSUSY'] : process.init_sequence += process.susy_sequence
+    if options['addSUSY'] : process.init_sequence += process.susy_sequence
     process.init_sequence += process.egmGsfElectronIDSequence
     process.init_sequence += process.eleVarHelper 
-#    if options['addSUSY'] : process.init_sequence += process.susy_sequence_requiresVID
+    if options['addSUSY'] : process.init_sequence += process.susy_sequence_requiresVID
 
 
 
