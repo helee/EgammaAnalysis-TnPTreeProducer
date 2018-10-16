@@ -123,14 +123,14 @@ if (varOptions.isMC):
     options['TnPPATHS']            = cms.vstring("HLT_Ele27_eta2p1_WPTight_Gsf_v*")
     options['TnPHLTTagFilters']    = cms.vstring("hltEle27erWPTightGsfTrackIsoFilter")
     options['TnPHLTProbeFilters']  = cms.vstring()
-    options['HLTFILTERTOMEASURE']  = cms.vstring("hltEle27erWPTightGsfTrackIsoFilter")   
+    options['HLTFILTERTOMEASURE']  = cms.vstring("hltDiEG60HEUnseededFilter")   
     options['GLOBALTAG']           = 'auto:run2_mc'
 else:
     options['OUTPUT_FILE_NAME']    = "TnPTree_data.root"
     options['TnPPATHS']            = cms.vstring("HLT_Ele27_eta2p1_WPTight_Gsf_v*")
     options['TnPHLTTagFilters']    = cms.vstring("hltEle27erWPTightGsfTrackIsoFilter")
     options['TnPHLTProbeFilters']  = cms.vstring()
-    options['HLTFILTERTOMEASURE']  = cms.vstring("hltEle27erWPTightGsfTrackIsoFilter")
+    options['HLTFILTERTOMEASURE']  = cms.vstring("hltDiEG60HEUnseededFilter")
     options['GLOBALTAG']           = 'auto:run2_data'
 
 if varOptions.GT != "auto" :
@@ -144,7 +144,10 @@ from EgammaAnalysis.TnPTreeProducer.etc.tnpInputTestFiles_cff import filesMiniAO
 if options['useAOD'] : from EgammaAnalysis.TnPTreeProducer.etc.tnpInputTestFiles_cff import filesAOD_23Sep2016 as inputs
     
 options['INPUT_FILE_NAME'] = inputs['data']
+#options['INPUT_FILE_NAME'] = cms.untracked.vstring('file:/eos/user/h/helee/miniAOD_2016_V2/data/FEE6A0D9-AF9D-E711-988E-A4BF01025C02.root')
 if varOptions.isMC:  options['INPUT_FILE_NAME'] =  inputs['mc']
+#options['INPUT_FILE_NAME'] = cms.untracked.vstring('file:/eos/user/h/helee/miniAOD_2016_V2/mc/madgraph/00099D43-77ED-E611-8889-5065F381E1A1.root')
+#options['INPUT_FILE_NAME'] = cms.untracked.vstring('file:/eos/user/h/helee/miniAOD_2016_V2/mc/amcatnlo/0651A962-7BE3-E611-A493-0CC47AD99050.root')
 
 
 ###################################################################

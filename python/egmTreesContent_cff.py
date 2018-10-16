@@ -90,7 +90,9 @@ EleProbeVariablesToStore = cms.PSet(
     el_dxy           = cms.InputTag("eleVarHelper:dxy"),
     el_3charge       = cms.string("chargeInfo().isGsfCtfScPixConsistent"),
     el_ecalDriven    = cms.string("ecalDrivenSeed"),
-    
+
+    el_passConversionVeto = cms.InputTag("eleVarHelper:passConversionVeto"),    
+    el_miniIso       = cms.InputTag("eleVarHelper:miniIso"),
     )
 
 PhoProbeVariablesToStore = cms.PSet(
@@ -143,12 +145,19 @@ TagVariablesToStore = cms.PSet(
     sc_eta    = cms.string("-log(tan(superClusterPosition.theta/2))"),
     sc_abseta = cms.string("abs(-log(tan(superCluster.position.theta/2)))"),
 
-#    Ele_mHits         = cms.InputTag("eleVarHelper:missinghits"),
+    Ele_mHits         = cms.InputTag("eleVarHelper:missinghits"),
     Ele_dz            = cms.InputTag("eleVarHelper:dz"),
     Ele_dxy           = cms.InputTag("eleVarHelper:dxy"),
     Ele_nonTrigMVA    = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring15NonTrig25nsV1Values"),
     Ele_trigMVA       = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring15Trig25nsV1Values"),
 
+    Ele_5x5_sieie          = cms.string("full5x5_showerShape().sigmaIetaIeta"),
+    Ele_dEtaSeed           = cms.string("deltaEtaSuperClusterTrackAtVtx+log(tan(superCluster.position.theta/2))-log(tan(superCluster.seed.position.theta/2))"),
+    Ele_dPhiIn             = cms.string("deltaPhiSuperClusterTrackAtVtx"),
+    Ele_1overEminus1overP  = cms.string("abs(1-eSuperClusterOverP())/ecalEnergy()"),
+    Ele_hoe           = cms.string("hadronicOverEm()"),
+    Ele_passConversionVeto = cms.InputTag("eleVarHelper:passConversionVeto"),
+    Ele_miniIso       = cms.InputTag("eleVarHelper:miniIso"),
     )
 
 CommonStuffForGsfElectronProbe = cms.PSet(
