@@ -6,7 +6,7 @@ submitVersion = "HN_EleTnP_80X_ID_Trig"
 doEleTree = 'doEleID=True'
 doPhoTree = 'doPhoID=False'
 doHLTTree = 'doTrigger=True'
-calibEn   = 'useCalibEn=False'
+#calibEn   = 'CalibEn=False'
 
 mainOutputDir = '/store/user/%s/%s' % (getUsernameFromSiteDB(),submitVersion)
 
@@ -50,9 +50,9 @@ if __name__ == '__main__':
     ##### submit MC
     config.Data.outLFNDirBase = '%s/%s/' % (mainOutputDir,'mc')
     config.Data.splitting     = 'FileBased'
-#    config.Data.unitsPerJob   = 8
-    config.Data.unitsPerJob   = 100
-    config.JobType.pyCfgParams  = ['isMC=True',doEleTree,doPhoTree,doHLTTree,calibEn,'GT=80X_mcRun2_asymptotic_2016_TrancheIV_v6']
+    config.Data.unitsPerJob   = 8
+#    config.Data.unitsPerJob   = 100
+    config.JobType.pyCfgParams  = ['isMC=True',doEleTree,doPhoTree,doHLTTree,'GT=80X_mcRun2_asymptotic_2016_TrancheIV_v6']
 
 #    config.General.requestName  = 'ttbar_madgraph'
 #    config.Data.inputDataset    = '/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'
@@ -71,7 +71,7 @@ if __name__ == '__main__':
 
     config.General.requestName  = 'GJets_HT-600ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8'
     config.Data.inputDataset    = '/GJets_HT-600ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'
-    submit(config)
+#    submit(config)
 
 #    config.General.requestName  = 'WJets_madgraph'
 #    config.Data.inputDataset    = '/WJetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv1-PUSpring16_80X_mcRun2_asymptotic_2016_v3-v2/MINIAODSIM'
@@ -109,30 +109,30 @@ if __name__ == '__main__':
     config.Data.splitting     = 'LumiBased'
     config.Data.lumiMask      = '/afs/cern.ch/user/h/helee/json/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt'
     config.Data.unitsPerJob   = 100
-    config.JobType.pyCfgParams  = ['isMC=False',doEleTree,doPhoTree,doHLTTree,calibEn,'GT=80X_dataRun2_2016LegacyRepro_v4']
+    config.JobType.pyCfgParams  = ['isMC=False',doEleTree,doPhoTree,doHLTTree,'GT=80X_dataRun2_2016LegacyRepro_v4']
  
     config.General.requestName  = '07Aug17_RunB'
     config.Data.inputDataset    = '/SingleElectron/Run2016B-07Aug17_ver2-v2/MINIAOD'
-#    submit(config)
+    submit(config)
     config.General.requestName  = '07Aug17_RunC'
     config.Data.inputDataset    = '/SingleElectron/Run2016C-07Aug17-v1/MINIAOD'
-#    submit(config)
+    submit(config)
     config.General.requestName  = '07Aug17_RunD'
     config.Data.inputDataset    = '/SingleElectron/Run2016D-07Aug17-v1/MINIAOD'
-#    submit(config)
+    submit(config)
     config.General.requestName  = '07Aug17_RunE'
     config.Data.inputDataset    = '/SingleElectron/Run2016E-07Aug17-v1/MINIAOD'
-#    submit(config)
+    submit(config)
     config.General.requestName  = '07Aug17_RunF'
     config.Data.inputDataset    = '/SingleElectron/Run2016F-07Aug17-v1/MINIAOD'
-#    submit(config)
+    submit(config)
 
 #    config.JobType.pyCfgParams  = ['isMC=False',doEleTree,doPhoTree,doHLTTree,calibEn,'GT=80X_dataRun2_Prompt_v16']
     config.General.requestName  = '07Aug17_RunG'
     config.Data.inputDataset    = '/SingleElectron/Run2016G-07Aug17-v1/MINIAOD'
-#    submit(config)
+    submit(config)
     config.General.requestName  = '07Aug17_RunH'
     config.Data.inputDataset    = '/SingleElectron/Run2016H-07Aug17-v1/MINIAOD'
-#    submit(config)
+    submit(config)
 
 

@@ -50,6 +50,11 @@ private:
   edm::EDGetTokenT<CandView> pfCandToken_;
   edm::EDGetTokenT<pat::PackedCandidateCollection> pfSrc_;
   edm::EDGetTokenT<double> rhoLabel_;
+  edm::EDGetToken electronsMiniAODToken_;
+  edm::EDGetTokenT<edm::ValueMap<bool> > vidPassToken_;
+  edm::EDGetTokenT<edm::ValueMap<float> > trkIsoMapToken_;
+  edm::EDGetTokenT<edm::ValueMap<bool> > vidPassLooseToken_;
+  edm::EDGetTokenT<edm::ValueMap<bool> > vidPassTightToken_;
 };
 
 template<class T>
@@ -58,7 +63,11 @@ ElectronVariableHelper<T>::ElectronVariableHelper(const edm::ParameterSet & iCon
   vtxToken_(consumes<reco::VertexCollection>(iConfig.getParameter<edm::InputTag>("vertexCollection"))),
   l1EGTkn(consumes<BXVector<l1t::EGamma> >(iConfig.getParameter<edm::InputTag>("l1EGColl"))),
   pfSrc_(consumes<pat::PackedCandidateCollection>(iConfig.getParameter<edm::InputTag>("pfSrc"))),
-  rhoLabel_(consumes<double>(iConfig.getParameter<edm::InputTag>("rhoLabel"))) {
+  rhoLabel_(consumes<double>(iConfig.getParameter<edm::InputTag>("rhoLabel"))),
+  vidPassToken_(consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("vid"))),
+  trkIsoMapToken_(consumes<edm::ValueMap<float> >(iConfig.getParameter<edm::InputTag>("trkIsoMap"))),
+  vidPassLooseToken_(consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("vidLoose"))),
+  vidPassTightToken_(consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("vidTight"))) {
 
   produces<edm::ValueMap<float> >("chi2");
   produces<edm::ValueMap<float> >("dz");
@@ -71,11 +80,19 @@ ElectronVariableHelper<T>::ElectronVariableHelper(const edm::ParameterSet & iCon
   produces<edm::ValueMap<float> >("pfPt");
   produces<edm::ValueMap<float> >("passConversionVeto");
   produces<edm::ValueMap<float> >("miniIso");
+//  produces<edm::ValueMap<float> >("isPassHEEPV70");
+  produces<edm::ValueMap<float> >("isPassHEEPV70");
+  produces<edm::ValueMap<float> >("trkIsoHEEP");
+  produces<edm::ValueMap<float> >("isPassLoose");
+  produces<edm::ValueMap<float> >("isPassTight");
 
   if( iConfig.existsAs<edm::InputTag>("pfCandColl") ) {
     pfCandToken_ = consumes<CandView>(iConfig.getParameter<edm::InputTag>("pfCandColl"));
   }
 
+  electronsMiniAODToken_    = mayConsume<edm::View<reco::GsfElectron> >
+    (iConfig.getParameter<edm::InputTag>
+     ("electronsMiniAOD"));
 }
 
 template<class T>
@@ -105,7 +122,22 @@ void ElectronVariableHelper<T>::produce(edm::Event & iEvent, const edm::EventSet
   
   edm::Handle<CandView> pfCands;
   if( !pfCandToken_.isUninitialized() ) iEvent.getByToken(pfCandToken_,pfCands);
-  
+
+  edm::Handle<edm::View<reco::GsfElectron> > electrons;
+  iEvent.getByToken(electronsMiniAODToken_,electrons);
+ 
+  edm::Handle<edm::ValueMap<bool> > vidPass;
+  iEvent.getByToken(vidPassToken_,vidPass);
+
+  edm::Handle<edm::ValueMap<float> > trkIsoMap; 
+  iEvent.getByToken(trkIsoMapToken_,trkIsoMap);
+
+  edm::Handle<edm::ValueMap<bool> > vidPassLoose;
+  iEvent.getByToken(vidPassLooseToken_,vidPassLoose);
+
+  edm::Handle<edm::ValueMap<bool> > vidPassTight;
+  iEvent.getByToken(vidPassTightToken_,vidPassTight);
+
   // prepare vector for output
   std::vector<float> chi2Vals;
   std::vector<float> dzVals;
@@ -118,11 +150,28 @@ void ElectronVariableHelper<T>::produce(edm::Event & iEvent, const edm::EventSet
   std::vector<float> pfPtVals;
   std::vector<float> passConversionVetoVals;
   std::vector<float> miniIsoVals;
+//  std::vector<float> isPassHEEPV70Vals;
+  std::vector<float> isPassHEEPV70Vals;
+  std::vector<float> trkIsoHEEPVals;
+  std::vector<float> isPassLooseVals;
+  std::vector<float> isPassTightVals;
 
   typename std::vector<T>::const_iterator probe, endprobes = probes->end();
 
+  int j=0;
   for (probe = probes->begin(); probe != endprobes; ++probe) {
-    
+   
+    const auto el = electrons->ptrAt(j);
+    bool isPassHEEPV70 = (*vidPass)[el];
+    float trkIsoHEEP = (*trkIsoMap)[el];
+    bool isPassLoose = (*vidPassLoose)[el];
+    bool isPassTight = (*vidPassTight)[el];
+
+    isPassHEEPV70Vals.push_back((float)isPassHEEPV70);
+    trkIsoHEEPVals.push_back(trkIsoHEEP); 
+    isPassLooseVals.push_back((float)isPassLoose);
+    isPassTightVals.push_back((float)isPassTight);
+ 
     chi2Vals.push_back(probe->gsfTrack()->normalizedChi2());
     dzVals.push_back(probe->gsfTrack()->dz(vtx->position()));
     dxyVals.push_back(probe->gsfTrack()->dxy(vtx->position()));
@@ -176,6 +225,9 @@ void ElectronVariableHelper<T>::produce(edm::Event & iEvent, const edm::EventSet
     }
     miniIsoVals.push_back(minirelIso);
 
+//    float isPassHEEPV70 = probe->electronID("heepElectronID-HEEPV70");
+//    isPassHEEPV70Vals.push_back(isPassHEEPV70);
+
     float l1e = 999999.;    
     float l1et = 999999.;
     float l1eta = 999999.;
@@ -206,7 +258,8 @@ void ElectronVariableHelper<T>::produce(edm::Event & iEvent, const edm::EventSet
     l1EtaVals.push_back(l1eta);
     l1PhiVals.push_back(l1phi);
     pfPtVals.push_back(pfpt);
-    
+   
+    ++j;
   }
 
   
@@ -277,6 +330,29 @@ void ElectronVariableHelper<T>::produce(edm::Event & iEvent, const edm::EventSet
   miniIsoFill.fill();
   iEvent.put(std::move(miniIsoValMap), "miniIso");
 
+  std::unique_ptr<edm::ValueMap<float> > isPassHEEPV70ValMap(new edm::ValueMap<float>());
+  edm::ValueMap<float>::Filler isPassHEEPV70Fill(*isPassHEEPV70ValMap);
+  isPassHEEPV70Fill.insert(probes, isPassHEEPV70Vals.begin(), isPassHEEPV70Vals.end());
+  isPassHEEPV70Fill.fill();
+  iEvent.put(std::move(isPassHEEPV70ValMap), "isPassHEEPV70");
+
+  std::unique_ptr<edm::ValueMap<float> > trkIsoHEEPValMap(new edm::ValueMap<float>());
+  edm::ValueMap<float>::Filler trkIsoHEEPFill(*trkIsoHEEPValMap);
+  trkIsoHEEPFill.insert(probes, trkIsoHEEPVals.begin(), trkIsoHEEPVals.end());
+  trkIsoHEEPFill.fill();
+  iEvent.put(std::move(trkIsoHEEPValMap), "trkIsoHEEP");
+
+  std::unique_ptr<edm::ValueMap<float> > isPassLooseValMap(new edm::ValueMap<float>());
+  edm::ValueMap<float>::Filler isPassLooseFill(*isPassLooseValMap);
+  isPassLooseFill.insert(probes, isPassLooseVals.begin(), isPassLooseVals.end());
+  isPassLooseFill.fill();
+  iEvent.put(std::move(isPassLooseValMap), "isPassLoose");
+
+  std::unique_ptr<edm::ValueMap<float> > isPassTightValMap(new edm::ValueMap<float>());
+  edm::ValueMap<float>::Filler isPassTightFill(*isPassTightValMap);
+  isPassTightFill.insert(probes, isPassTightVals.begin(), isPassTightVals.end());
+  isPassTightFill.fill();
+  iEvent.put(std::move(isPassTightValMap), "isPassTight");
 }
 
 template<class T>

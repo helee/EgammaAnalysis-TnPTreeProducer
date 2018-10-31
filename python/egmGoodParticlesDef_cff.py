@@ -64,6 +64,11 @@ def setGoodParticlesMiniAOD(process, options):
                                           #pfCandColl       = cms.InputTag("packedPFCandidates"),
                                           rhoLabel         = cms.InputTag("fixedGridRhoFastjetAll"),
                                           pfSrc            = cms.InputTag("packedPFCandidates"),
+                                          electronsMiniAOD = cms.InputTag("slimmedElectrons"),
+                                          vid              = cms.InputTag("egmGsfElectronIDs:heepElectronID-HEEPV70"),
+                                          trkIsoMap        = cms.InputTag("heepIDVarValueMaps","eleTrkPtIso"),
+                                          vidLoose         = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-loose"),
+                                          vidTight         = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-tight"),
                                           )
     
 

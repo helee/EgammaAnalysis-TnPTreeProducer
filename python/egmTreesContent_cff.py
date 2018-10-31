@@ -93,6 +93,12 @@ EleProbeVariablesToStore = cms.PSet(
 
     el_passConversionVeto = cms.InputTag("eleVarHelper:passConversionVeto"),    
     el_miniIso       = cms.InputTag("eleVarHelper:miniIso"),
+
+    #ID
+    el_isPassHEEPV70  = cms.InputTag("eleVarHelper:isPassHEEPV70"),
+    el_trkIsoHEEP     = cms.InputTag("eleVarHelper:trkIsoHEEP"),
+    el_isPassLoose    = cms.InputTag("eleVarHelper:isPassLoose"),
+    el_isPassTight    = cms.InputTag("eleVarHelper:isPassTight"),
     )
 
 PhoProbeVariablesToStore = cms.PSet(
@@ -158,6 +164,11 @@ TagVariablesToStore = cms.PSet(
     Ele_hoe           = cms.string("hadronicOverEm()"),
     Ele_passConversionVeto = cms.InputTag("eleVarHelper:passConversionVeto"),
     Ele_miniIso       = cms.InputTag("eleVarHelper:miniIso"),
+
+    Ele_isPassHEEPV70  = cms.InputTag("eleVarHelper:isPassHEEPV70"),
+    Ele_trkIsoHEEP     = cms.InputTag("eleVarHelper:trkIsoHEEP"),
+    Ele_isPassLoose    = cms.InputTag("eleVarHelper:isPassLoose"),
+    Ele_isPassTight    = cms.InputTag("eleVarHelper:isPassTight"),
     )
 
 CommonStuffForGsfElectronProbe = cms.PSet(
