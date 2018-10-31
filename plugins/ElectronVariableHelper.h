@@ -49,8 +49,6 @@ private:
   edm::EDGetTokenT<BXVector<l1t::EGamma> > l1EGTkn;
   edm::EDGetTokenT<CandView> pfCandToken_;
   edm::EDGetTokenT<double> rhoLabel_;
-//  edm::EDGetToken electronsMiniAODToken_;
-//  edm::EDGetTokenT<edm::ValueMap<float> > mvaValuesMapToken_;
 };
 
 template<class T>
@@ -59,7 +57,6 @@ ElectronVariableHelper<T>::ElectronVariableHelper(const edm::ParameterSet & iCon
   vtxToken_(consumes<reco::VertexCollection>(iConfig.getParameter<edm::InputTag>("vertexCollection"))),
   l1EGTkn(consumes<BXVector<l1t::EGamma> >(iConfig.getParameter<edm::InputTag>("l1EGColl"))),
   rhoLabel_(consumes<double>(iConfig.getParameter<edm::InputTag>("rhoLabel"))) {
-//  mvaValuesMapToken_(consumes<edm::ValueMap<float> >(iConfig.getParameter<edm::InputTag>("mvaValuesMap"))) {
 
   produces<edm::ValueMap<float> >("chi2");
   produces<edm::ValueMap<float> >("dz");
@@ -75,14 +72,16 @@ ElectronVariableHelper<T>::ElectronVariableHelper(const edm::ParameterSet & iCon
   produces<edm::ValueMap<float> >("miniIso");
   produces<edm::ValueMap<float> >("hoeLooseBarrel");
   produces<edm::ValueMap<float> >("hoeLooseEndcap");
-//  produces<edm::ValueMap<float> >("mva");
+  produces<edm::ValueMap<float> >("isPassVeto");
+  produces<edm::ValueMap<float> >("isPassLoose");
+  produces<edm::ValueMap<float> >("isPassMedium");
+  produces<edm::ValueMap<float> >("isPassTight");
+  produces<edm::ValueMap<float> >("isPassHEEPV70");
 
   if( iConfig.existsAs<edm::InputTag>("pfCandColl") ) {
     pfCandToken_ = consumes<CandView>(iConfig.getParameter<edm::InputTag>("pfCandColl"));
   }
 
-//  electronsMiniAODToken_ = mayConsume<edm::View<reco::GsfElectron> >(iConfig.getParameter<edm::InputTag>("electronsMiniAOD"));
-//  electronsMiniAODToken_ = mayConsume<edm::View<pat::Electron> >(iConfig.getParameter<edm::InputTag>("electronsMiniAOD"));
 }
 
 template<class T>
@@ -110,13 +109,6 @@ void ElectronVariableHelper<T>::produce(edm::Event & iEvent, const edm::EventSet
   iEvent.getByToken(rhoLabel_, rhoHandle);
   double rho = std::max(*(rhoHandle.product()), 0.0);
  
-/*  edm::Handle<edm::View<reco::GsfElectron> > electrons;
-  edm::Handle<edm::View<pat::Electron> > electrons;
-  iEvent.getByToken(electronsMiniAODToken_,electrons);
-
-  edm::Handle<edm::ValueMap<float> > mvaValues;
-  iEvent.getByToken(mvaValuesMapToken_,mvaValues);*/
- 
   // prepare vector for output
   std::vector<float> chi2Vals;
   std::vector<float> dzVals;
@@ -132,11 +124,14 @@ void ElectronVariableHelper<T>::produce(edm::Event & iEvent, const edm::EventSet
   std::vector<float> miniIsoVals;
   std::vector<float> hoeLooseBarrelVals;
   std::vector<float> hoeLooseEndcapVals;
-//  std::vector<float> mvaVals;
+  std::vector<float> isPassVetoVals;
+  std::vector<float> isPassLooseVals;
+  std::vector<float> isPassMediumVals;
+  std::vector<float> isPassTightVals;
+  std::vector<float> isPassHEEPV70Vals;
 
   typename std::vector<T>::const_iterator probe, endprobes = probes->end();
 
-//  int j = 0;
   for (probe = probes->begin(); probe != endprobes; ++probe) {
     
     chi2Vals.push_back(probe->gsfTrack()->normalizedChi2());
@@ -144,12 +139,10 @@ void ElectronVariableHelper<T>::produce(edm::Event & iEvent, const edm::EventSet
     dxyVals.push_back(probe->gsfTrack()->dxy(vtx->position()));
     mhVals.push_back(float(probe->gsfTrack()->hitPattern().numberOfLostHits(reco::HitPattern::MISSING_INNER_HITS)));
 
-//    const auto el = electrons->ptrAt(j);
-
     passConversionVetoVals.push_back( probe->passConversionVeto() );
     float ip3d = probe->dB(pat::Electron::PV3D);
     float ip3derr = probe->edB(pat::Electron::PV3D);
-    float sip3d = std::abs(ip3d/ip3derr);
+    float sip3d = ip3d/ip3derr;
     SIP3DVals.push_back(sip3d);
 
     float scEta = probe->superCluster()->eta();
@@ -166,10 +159,22 @@ void ElectronVariableHelper<T>::produce(edm::Event & iEvent, const edm::EventSet
 //    float x3 = 0.0;
     float minirelIso = (chg + std::max(neu + pho - rho*ea, 0.0))/ecalpt;
     miniIsoVals.push_back(minirelIso);
-    float hoe_loose_barrel = 0.05 + 1.12/scEnergy + 0.0368*rho/scEnergy;
-    float hoe_loose_endcap = 0.0414 + 0.5/scEnergy + 0.201*rho/scEnergy;
+    float hoe_loose_barrel = 0.05 + 1.16/scEnergy + 0.0324*rho/scEnergy;
+    float hoe_loose_endcap = 0.0441 + 2.54/scEnergy + 0.183*rho/scEnergy;
     hoeLooseBarrelVals.push_back(hoe_loose_barrel);
     hoeLooseEndcapVals.push_back(hoe_loose_endcap);  
+
+    float isPassVeto = probe->electronID("cutBasedElectronID-Summer16-80X-V1-veto");
+    float isPassLoose = probe->electronID("cutBasedElectronID-Summer16-80X-V1-loose");
+    float isPassMedium = probe->electronID("cutBasedElectronID-Summer16-80X-V1-medium");
+    float isPassTight = probe->electronID("cutBasedElectronID-Summer16-80X-V1-tight");
+    float isPassHEEPV70 = probe->electronID("heepElectronID-HEEPV70");
+
+    isPassVetoVals.push_back(isPassVeto);
+    isPassLooseVals.push_back(isPassLoose);
+    isPassMediumVals.push_back(isPassMedium);
+    isPassTightVals.push_back(isPassTight);
+    isPassHEEPV70Vals.push_back(isPassHEEPV70);
 
     float l1e = 999999.;    
     float l1et = 999999.;
@@ -202,11 +207,6 @@ void ElectronVariableHelper<T>::produce(edm::Event & iEvent, const edm::EventSet
     l1PhiVals.push_back(l1phi);
     pfPtVals.push_back(pfpt);
 
-//    float mvaval = (*mvaValues)[el];
-//    float mvaval = el->userFloat("ElectronMVAEstimatorRun2Fall17NoIsoV1Values");    
-//    float mvaval = el->userFloat("ElectronMVAEstimatorRun2Spring15NonTrig25nsV1Values");
-//    mvaVals.push_back(mvaval);
-//    ++j; 
   }
 
   
@@ -295,23 +295,48 @@ void ElectronVariableHelper<T>::produce(edm::Event & iEvent, const edm::EventSet
   hoeLooseEndcapFill.fill();
   iEvent.put(std::move(hoeLooseEndcapValMap), "hoeLooseEndcap");
 
-/*  std::unique_ptr<edm::ValueMap<float> > mvaValMap(new edm::ValueMap<float>());
-  edm::ValueMap<float>::Filler mvaFiller(*mvaValMap);
-  mvaFiller.insert(probes, mvaVals.begin(), mvaVals.end());
-  mvaFiller.fill();
-  iEvent.put(std::move(mvaValMap), "mva");*/
+  std::unique_ptr<edm::ValueMap<float> > isPassVetoValMap(new edm::ValueMap<float>());
+  edm::ValueMap<float>::Filler isPassVetoFill(*isPassVetoValMap);
+  isPassVetoFill.insert(probes, isPassVetoVals.begin(), isPassVetoVals.end());
+  isPassVetoFill.fill();
+  iEvent.put(std::move(isPassVetoValMap), "isPassVeto");
+
+  std::unique_ptr<edm::ValueMap<float> > isPassLooseValMap(new edm::ValueMap<float>());
+  edm::ValueMap<float>::Filler isPassLooseFill(*isPassLooseValMap);
+  isPassLooseFill.insert(probes, isPassLooseVals.begin(), isPassLooseVals.end());
+  isPassLooseFill.fill();
+  iEvent.put(std::move(isPassLooseValMap), "isPassLoose");
+
+  std::unique_ptr<edm::ValueMap<float> > isPassMediumValMap(new edm::ValueMap<float>());
+  edm::ValueMap<float>::Filler isPassMediumFill(*isPassMediumValMap);
+  isPassMediumFill.insert(probes, isPassMediumVals.begin(), isPassMediumVals.end());
+  isPassMediumFill.fill();
+  iEvent.put(std::move(isPassMediumValMap), "isPassMedium");
+
+  std::unique_ptr<edm::ValueMap<float> > isPassTightValMap(new edm::ValueMap<float>());
+  edm::ValueMap<float>::Filler isPassTightFill(*isPassTightValMap);
+  isPassTightFill.insert(probes, isPassTightVals.begin(), isPassTightVals.end());
+  isPassTightFill.fill();
+  iEvent.put(std::move(isPassTightValMap), "isPassTight");
+
+  std::unique_ptr<edm::ValueMap<float> > isPassHEEPV70ValMap(new edm::ValueMap<float>());
+  edm::ValueMap<float>::Filler isPassHEEPV70Fill(*isPassHEEPV70ValMap);
+  isPassHEEPV70Fill.insert(probes, isPassHEEPV70Vals.begin(), isPassHEEPV70Vals.end());
+  isPassHEEPV70Fill.fill();
+  iEvent.put(std::move(isPassHEEPV70ValMap), "isPassHEEPV70");
+
 }
 
 template<class T>
 float ElectronVariableHelper<T>::getEffArea(float scEta){
   float absEta = std::abs(scEta);
-  if (0.0000 >= absEta && absEta < 1.0000) return 0.1566;
-  if (1.0000 >= absEta && absEta < 1.4790) return 0.1626;
-  if (1.4790 >= absEta && absEta < 2.0000) return 0.1073;
-  if (2.0000 >= absEta && absEta < 2.2000) return 0.0854;
-  if (2.2000 >= absEta && absEta < 2.3000) return 0.1051;
-  if (2.3000 >= absEta && absEta < 2.4000) return 0.1204;
-  if (2.4000 >= absEta && absEta < 5.0000) return 0.1524;
+  if (0.0000 >= absEta && absEta < 1.0000) return 0.1440;
+  if (1.0000 >= absEta && absEta < 1.4790) return 0.1562;
+  if (1.4790 >= absEta && absEta < 2.0000) return 0.1032;
+  if (2.0000 >= absEta && absEta < 2.2000) return 0.0859;
+  if (2.2000 >= absEta && absEta < 2.3000) return 0.1116;
+  if (2.3000 >= absEta && absEta < 2.4000) return 0.1321;
+  if (2.4000 >= absEta && absEta < 5.0000) return 0.1654;
   return 0;
 }
 

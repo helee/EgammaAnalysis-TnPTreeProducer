@@ -106,6 +106,13 @@ EleProbeVariablesToStore = cms.PSet(
     el_sip3d         = cms.InputTag("eleVarHelper:SIP3D"),
     el_miniIso       = cms.InputTag("eleVarHelper:miniIso"),
 
+    #ID
+    el_isPassVeto     = cms.InputTag("eleVarHelper:isPassVeto"),
+    el_isPassLoose    = cms.InputTag("eleVarHelper:isPassLoose"),
+    el_isPassMedium   = cms.InputTag("eleVarHelper:isPassMedium"),
+    el_isPassTight    = cms.InputTag("eleVarHelper:isPassTight"),
+    el_isPassHEEPV70  = cms.InputTag("eleVarHelper:isPassHEEPV70"),
+  
     )
 
 PhoProbeVariablesToStore = cms.PSet(
@@ -171,9 +178,25 @@ TagVariablesToStore = cms.PSet(
     Ele_IsoMVA94X   = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Fall17IsoV1Values"),
 #    Ele_mva           = cms.InputTag("eleVarHelper:mva"),
 
+    ## some necessary variables
+
+    Ele_5x5_sieie          = cms.string("full5x5_showerShape().sigmaIetaIeta"),
+    Ele_dEtaSeed           = cms.string("deltaEtaSuperClusterTrackAtVtx+log(tan(superCluster.position.theta/2))-log(tan(superCluster.seed.position.theta/2))"),
+    Ele_dPhiIn             = cms.string("deltaPhiSuperClusterTrackAtVtx"),
+    Ele_1overEminus1overP  = cms.string("abs(1-eSuperClusterOverP())/ecalEnergy()"),
+    Ele_hoe           = cms.string("hadronicOverEm()"),
+    Ele_hoe_barrel    = cms.InputTag("eleVarHelper:hoeLooseBarrel"),
+    Ele_hoe_endcap    = cms.InputTag("eleVarHelper:hoeLooseEndcap"), 
     Ele_passConversionVeto = cms.InputTag("eleVarHelper:passConversionVeto"),
     Ele_sip3d         = cms.InputTag("eleVarHelper:SIP3D"),
     Ele_miniIso       = cms.InputTag("eleVarHelper:miniIso"),
+
+    Ele_isPassVeto     = cms.InputTag("eleVarHelper:isPassVeto"),
+    Ele_isPassLoose    = cms.InputTag("eleVarHelper:isPassLoose"),
+    Ele_isPassMedium   = cms.InputTag("eleVarHelper:isPassMedium"),
+    Ele_isPassTight    = cms.InputTag("eleVarHelper:isPassTight"),
+    Ele_isPassHEEPV70  = cms.InputTag("eleVarHelper:isPassHEEPV70"),
+
     )
 
 CommonStuffForGsfElectronProbe = cms.PSet(

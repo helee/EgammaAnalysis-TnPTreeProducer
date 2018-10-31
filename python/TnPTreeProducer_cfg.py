@@ -128,18 +128,16 @@ if (varOptions.isMC):
 #    options['TnPHLTTagFilters']    = cms.vstring("hltEle27erWPTightGsfTrackIsoFilter") #FOR 2016
 #    options['HLTFILTERTOMEASURE']  = cms.vstring("hltEle27erWPTightGsfTrackIsoFilter") #FOR 2016
     options['TnPPATHS']            = cms.vstring("HLT_Ele32_WPTight_Gsf_L1DoubleEG_v*")
-    options['TnPHLTTagFilters']    = cms.vstring("hltEle32L1DoubleEGWPTightGsfTrackIsoFilter","hltEGL1SingleEGOrFilter")
-    options['TnPHLTProbeFilters']  = cms.vstring()
-#    options['HLTFILTERTOMEASURE']  = cms.vstring("hltEle32L1DoubleEGWPTightGsfTrackIsoFilter")
-    options['HLTFILTERTOMEASURE']  = cms.vstring()
+    options['TnPHLTTagFilters']    = cms.vstring("hltEle32L1DoubleEGWPTightGsfTrackIsoFilter","hltEGL1SingleEGOrFilter")  ## hltDiEG70HEUnseededFilter, hltEG70HEFilter
+    options['TnPHLTProbeFilters']  = cms.vstring()  ## hltDiEG70HEUnseededFilter
+    options['HLTFILTERTOMEASURE']  = cms.vstring("hltDiEG70HEUnseededFilter") ## hltEG70HEFilter
     options['GLOBALTAG']           = 'auto:run2_mc'
 else:
     options['OUTPUT_FILE_NAME']    = "TnPTree_data.root"
     options['TnPPATHS']            = cms.vstring("HLT_Ele32_WPTight_Gsf_L1DoubleEG_v*")
     options['TnPHLTTagFilters']    = cms.vstring("hltEle32L1DoubleEGWPTightGsfTrackIsoFilter","hltEGL1SingleEGOrFilter")
     options['TnPHLTProbeFilters']  = cms.vstring()
-#    options['HLTFILTERTOMEASURE']  = cms.vstring("hltEle32L1DoubleEGWPTightGsfTrackIsoFilter")
-    options['HLTFILTERTOMEASURE']  = cms.vstring()
+    options['HLTFILTERTOMEASURE']  = cms.vstring("hltDiEG70HEUnseededFilter")
     options['GLOBALTAG']           = 'auto:run2_data'
 
 if varOptions.GT != "auto" :
@@ -152,11 +150,11 @@ if varOptions.GT != "auto" :
 from EgammaAnalysis.TnPTreeProducer.etc.tnpInputTestFiles_cff import filesMiniAOD_Preliminary2017 as inputs
 if options['useAOD'] : from EgammaAnalysis.TnPTreeProducer.etc.tnpInputTestFiles_cff import filesAOD_23Sep2016 as inputs #switch to 2017 samples if want to cmsRun on AOD
     
-#options['INPUT_FILE_NAME'] = inputs['data']
-options['INPUT_FILE_NAME'] = cms.untracked.vstring('file:/afs/cern.ch/work/h/helee/miniAOD_V2/data/F8D7874B-A937-E811-9D5D-008CFAE4535C.root') 
-#if varOptions.isMC:  options['INPUT_FILE_NAME'] =  inputs['mc']
-if varOptions.isMC:  options['INPUT_FILE_NAME'] = cms.untracked.vstring('file:/afs/cern.ch/work/h/helee/miniAOD_V2/mc/madgraph/F2283B5C-6044-E811-B61D-0025905B859A.root')
-#if varOptions.isMC:  options['INPUT_FILE_NAME'] = cms.untracked.vstring('file:/afs/cern.ch/work/h/helee/miniAOD_V2/mc/amcatnlo/FEFADA2F-8C44-E811-914F-B496910A8618.root')
+options['INPUT_FILE_NAME'] = inputs['data']
+#options['INPUT_FILE_NAME'] = cms.untracked.vstring('file:/eos/user/h/helee/miniAOD_2017_V2/data/F8D7874B-A937-E811-9D5D-008CFAE4535C.root') 
+if varOptions.isMC:  options['INPUT_FILE_NAME'] =  inputs['mc']
+#if varOptions.isMC:  options['INPUT_FILE_NAME'] = cms.untracked.vstring('file:/eos/user/h/helee/miniAOD_2017_V2/mc/madgraph/F2283B5C-6044-E811-B61D-0025905B859A.root')
+#if varOptions.isMC:  options['INPUT_FILE_NAME'] = cms.untracked.vstring('file:/eos/user/h/helee/miniAOD_2017_V2/mc/amcatnlo/FEFADA2F-8C44-E811-914F-B496910A8618.root')
 
 
 ###################################################################
@@ -326,6 +324,7 @@ if (options['DoTrigger']): process.tree_sequence *= process.tnpEleTrig
 if (options['DoRECO'])   : process.tree_sequence *= process.tnpEleReco
 if (options['DoEleID'])  : process.tree_sequence *= process.tnpEleIDs
 if (options['DoPhoID'])  : process.tree_sequence *= process.tnpPhoIDs
+
 
 # Scale and Smearing
 from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
