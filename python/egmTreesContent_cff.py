@@ -63,6 +63,8 @@ EleProbeVariablesToStore = cms.PSet(
     
     el_hoe           = cms.string("hcalOverEcalBc"),
     el_eoverp        = cms.string("(superCluster().rawEnergy+superCluster().preshowerEnergy)/gsfTrack().pMode()"),
+    el_1overEminus1overP        = cms.string("abs(1-eSuperClusterOverP())/ecalEnergy()"),
+    el_escoverp      = cms.string("eSuperClusterOverP()"),
 
     # mva id
     el_nonTrigMVA    = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring15NonTrig25nsV1Values"),
@@ -156,6 +158,7 @@ TagVariablesToStore = cms.PSet(
     Ele_dxy           = cms.InputTag("eleVarHelper:dxy"),
     Ele_nonTrigMVA    = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring15NonTrig25nsV1Values"),
     Ele_trigMVA       = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring15Trig25nsV1Values"),
+    Ele_nonTrigMVA80X = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring16GeneralPurposeV1Values"), 
 
     Ele_5x5_sieie          = cms.string("full5x5_showerShape().sigmaIetaIeta"),
     Ele_dEtaSeed           = cms.string("deltaEtaSuperClusterTrackAtVtx+log(tan(superCluster.position.theta/2))-log(tan(superCluster.seed.position.theta/2))"),
