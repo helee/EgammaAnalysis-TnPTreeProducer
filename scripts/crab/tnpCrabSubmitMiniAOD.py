@@ -2,10 +2,10 @@ from CRABClient.UserUtilities import config, getUsernameFromSiteDB
 import sys
 config = config()
 
-submitVersion = "HN_EleTnP_94X_Trig1"
+submitVersion = "HN_EleTnP_94X_ID_DY12Jets"
 doEleTree = 'doEleID=True'
 #doPhoTree = 'doPhoID=False'
-doHLTTree = 'doTrigger=True'
+doHLTTree = 'doTrigger=False'
 #calibEn   = 'useCalibEn=False'
 
 #mainOutputDir = '/store/group/phys_egamma/soffi/TnP/ntuples_01162018/%s' % submitVersion
@@ -55,9 +55,12 @@ if __name__ == '__main__':
     config.JobType.pyCfgParams  = ['isMC=True',doEleTree,doHLTTree,'GT=94X_mc2017_realistic_v14']
 
 
-#    config.General.requestName  = 'DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8'
-#    config.Data.inputDataset    = '/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAOD-RECOSIMstep_94X_mc2017_realistic_v10-v1/MINIAODSIM'
-#    submit(config)
+    config.General.requestName  = 'DY1JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8'
+    config.Data.inputDataset    = '/DY1JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14_ext1-v1/MINIAODSIM'
+    submit(config)
+    config.General.requestName  = 'DY2JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8'
+    config.Data.inputDataset    = '/DY2JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14_ext1-v1/MINIAODSIM'
+    submit(config)
     config.General.requestName  = 'DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8-ext1'
     config.Data.inputDataset    = '/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017RECOSIMstep_12Apr2018_94X_mc2017_realistic_v14_ext1-v1/MINIAODSIM'
 #    submit(config)
@@ -66,43 +69,43 @@ if __name__ == '__main__':
 #    submit(config)
     config.General.requestName  = 'WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8-ext1'
     config.Data.inputDataset    = '/WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14_ext1-v2/MINIAODSIM'
-    submit(config)
+#    submit(config)
     config.General.requestName  = 'TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8'
     config.Data.inputDataset    = '/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'
-    submit(config)
+#    submit(config)
     config.General.requestName  = 'TTToSemiLeptonic_TuneCP5_PSweights_13TeV-powheg-pythia8'
     config.Data.inputDataset    = '/TTToSemiLeptonic_TuneCP5_PSweights_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'
-    submit(config)
+#    submit(config)
     config.General.requestName  = 'ST_tW_top_5f_NoFullyHadronicDecays_TuneCP5_13TeV-powheg-pythia8'
     config.Data.inputDataset    = '/ST_tW_top_5f_NoFullyHadronicDecays_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'
-    submit(config)
+#    submit(config)
     config.General.requestName  = 'ST_tW_antitop_5f_NoFullyHadronicDecays_TuneCP5_13TeV-powheg-pythia8'
     config.Data.inputDataset    = '/ST_tW_antitop_5f_NoFullyHadronicDecays_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v2/MINIAODSIM'
-    submit(config)
+#    submit(config)
     config.General.requestName  = 'WW_TuneCP5_13TeV-pythia8'
     config.Data.inputDataset    = '/WW_TuneCP5_13TeV-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'
-    submit(config)
+#    submit(config)
     config.General.requestName  = 'WZ_TuneCP5_13TeV-pythia8'
     config.Data.inputDataset    = '/WZ_TuneCP5_13TeV-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'
-    submit(config)
+#    submit(config)
     config.General.requestName  = 'ZZ_TuneCP5_13TeV-pythia8'
     config.Data.inputDataset    = '/ZZ_TuneCP5_13TeV-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'
-    submit(config)
+#    submit(config)
     config.General.requestName  = 'GJets_HT-40To100_TuneCP5_13TeV-madgraphMLM-pythia8'
     config.Data.inputDataset    = '/GJets_HT-40To100_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v2/MINIAODSIM'
-    submit(config)
+#    submit(config)
     config.General.requestName  = 'GJets_HT-100To200_TuneCP5_13TeV-madgraphMLM-pythia8'
     config.Data.inputDataset    = '/GJets_HT-100To200_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'
-    submit(config)
+#    submit(config)
     config.General.requestName  = 'GJets_HT-200To400_TuneCP5_13TeV-madgraphMLM-pythia8'
     config.Data.inputDataset    = '/GJets_HT-200To400_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'
-    submit(config)
+#    submit(config)
     config.General.requestName  = 'GJets_HT-400To600_TuneCP5_13TeV-madgraphMLM-pythia8'
     config.Data.inputDataset    = '/GJets_HT-400To600_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'
-    submit(config)
+#    submit(config)
     config.General.requestName  = 'GJets_HT-600ToInf_TuneCP5_13TeV-madgraphMLM-pythia8'
     config.Data.inputDataset    = '/GJets_HT-600ToInf_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'
-    submit(config)
+#    submit(config)
 
     ##### now submit DATA
     config.Data.outLFNDirBase = '%s/%s/' % (mainOutputDir,'data')

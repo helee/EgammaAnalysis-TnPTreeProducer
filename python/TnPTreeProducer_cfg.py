@@ -128,9 +128,13 @@ if (varOptions.isMC):
 #    options['TnPHLTTagFilters']    = cms.vstring("hltEle27erWPTightGsfTrackIsoFilter") #FOR 2016
 #    options['HLTFILTERTOMEASURE']  = cms.vstring("hltEle27erWPTightGsfTrackIsoFilter") #FOR 2016
     options['TnPPATHS']            = cms.vstring("HLT_Ele32_WPTight_Gsf_L1DoubleEG_v*")
-    options['TnPHLTTagFilters']    = cms.vstring("hltEle32L1DoubleEGWPTightGsfTrackIsoFilter","hltEGL1SingleEGOrFilter")  ## hltDiEG70HEUnseededFilter, hltEG70HEFilter
-    options['TnPHLTProbeFilters']  = cms.vstring()  ## hltDiEG70HEUnseededFilter
-    options['HLTFILTERTOMEASURE']  = cms.vstring("hltDiEG70HEUnseededFilter") ## hltEG70HEFilter
+    options['TnPHLTTagFilters']    = cms.vstring("hltEle32L1DoubleEGWPTightGsfTrackIsoFilter","hltEGL1SingleEGOrFilter")
+    options['TnPHLTProbeFilters']  = cms.vstring()
+    options['HLTFILTERTOMEASURE']  = cms.vstring("hltDiEG70HEUnseededFilter")
+#    options['TnPPATHS']            = cms.vstring("HLT_DoublePhoton70_v*")
+#    options['TnPHLTTagFilters']    = cms.vstring("hltDiEG70HEUnseededFilter","hltEG70HEFilter")
+#    options['TnPHLTProbeFilters']  = cms.vstring("hltDiEG70HEUnseededFilter")
+#    options['HLTFILTERTOMEASURE']  = cms.vstring("hltEG70HEFilter")
     options['GLOBALTAG']           = 'auto:run2_mc'
 else:
     options['OUTPUT_FILE_NAME']    = "TnPTree_data.root"
@@ -138,6 +142,10 @@ else:
     options['TnPHLTTagFilters']    = cms.vstring("hltEle32L1DoubleEGWPTightGsfTrackIsoFilter","hltEGL1SingleEGOrFilter")
     options['TnPHLTProbeFilters']  = cms.vstring()
     options['HLTFILTERTOMEASURE']  = cms.vstring("hltDiEG70HEUnseededFilter")
+#    options['TnPPATHS']            = cms.vstring("HLT_DoublePhoton70_v*")
+#    options['TnPHLTTagFilters']    = cms.vstring("hltDiEG70HEUnseededFilter","hltEG70HEFilter")
+#    options['TnPHLTProbeFilters']  = cms.vstring("hltDiEG70HEUnseededFilter")
+#    options['HLTFILTERTOMEASURE']  = cms.vstring("hltEG70HEFilter")
     options['GLOBALTAG']           = 'auto:run2_data'
 
 if varOptions.GT != "auto" :
