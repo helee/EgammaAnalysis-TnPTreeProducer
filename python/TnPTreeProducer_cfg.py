@@ -334,12 +334,6 @@ if (options['DoEleID'])  : process.tree_sequence *= process.tnpEleIDs
 if (options['DoPhoID'])  : process.tree_sequence *= process.tnpPhoIDs
 
 
-# Scale and Smearing
-from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
-setupEgammaPostRecoSeq(process,
-                       runVID=False, #saves CPU time by not needlessly re-running VID
-                       era='2017-Nov17ReReco')
-
 ##########################################################################
 ## PATHS
 ##########################################################################
@@ -352,7 +346,6 @@ if (not options['DEBUG']):
     process.outpath.remove(process.out)
 
 process.p = cms.Path(
-        process.egammaPostRecoSeq +
         process.hltFilter         +
         process.cand_sequence     + 
         process.tnpPairs_sequence +
