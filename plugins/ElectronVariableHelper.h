@@ -55,6 +55,7 @@ private:
   edm::EDGetTokenT<CandView> pfCandToken_;
   edm::EDGetTokenT<reco::ConversionCollection> conversionsToken_;
   edm::EDGetTokenT<reco::BeamSpot> beamSpotToken_;
+  edm::EDGetTokenT<double> rhoLabel_;
 };
 
 template<class T>
@@ -63,7 +64,8 @@ ElectronVariableHelper<T>::ElectronVariableHelper(const edm::ParameterSet & iCon
   vtxToken_(consumes<reco::VertexCollection>(iConfig.getParameter<edm::InputTag>("vertexCollection"))),
   l1EGToken_(consumes<BXVector<l1t::EGamma> >(iConfig.getParameter<edm::InputTag>("l1EGColl"))),
   conversionsToken_(consumes<reco::ConversionCollection>(iConfig.getParameter<edm::InputTag>("conversions"))),
-  beamSpotToken_(consumes<reco::BeamSpot>(iConfig.getParameter<edm::InputTag>("beamSpot"))) {
+  beamSpotToken_(consumes<reco::BeamSpot>(iConfig.getParameter<edm::InputTag>("beamSpot"))),
+  rhoLabel_(consumes<double>(iConfig.getParameter<edm::InputTag>("rhoLabel"))) {
 
   produces<edm::ValueMap<float> >("dz");
   produces<edm::ValueMap<float> >("dxy");
@@ -80,6 +82,11 @@ ElectronVariableHelper<T>::ElectronVariableHelper(const edm::ParameterSet & iCon
   produces<edm::ValueMap<float> >("kfchi2");
   produces<edm::ValueMap<float> >("ioemiop");
   produces<edm::ValueMap<float> >("5x5circularity");
+
+  produces<edm::ValueMap<float> >("passConversionVeto");
+  produces<edm::ValueMap<float> >("isPassHEEPV70");
+  produces<edm::ValueMap<float> >("hoeLooseBarrel");
+  produces<edm::ValueMap<float> >("hoeLooseEndcap");
 
   if( iConfig.existsAs<edm::InputTag>("pfCandColl") ) {
     pfCandToken_ = consumes<CandView>(iConfig.getParameter<edm::InputTag>("pfCandColl"));
@@ -122,6 +129,10 @@ void ElectronVariableHelper<T>::produce(edm::Event & iEvent, const edm::EventSet
   iEvent.getByToken(beamSpotToken_, beamSpotHandle);
   const reco::BeamSpot* beamSpot = &*(beamSpotHandle.product());
 
+  edm::Handle<double> rhoHandle;
+  iEvent.getByToken(rhoLabel_, rhoHandle);
+  double rho = std::max(*(rhoHandle.product()), 0.0);
+
   edm::Handle<CandView> pfCands;
   if( !pfCandToken_.isUninitialized() ) iEvent.getByToken(pfCandToken_,pfCands);
 
@@ -144,6 +155,11 @@ void ElectronVariableHelper<T>::produce(edm::Event & iEvent, const edm::EventSet
 
   std::vector<float> gsfhVals;
 
+  std::vector<float> passConversionVetoVals;
+  std::vector<float> isPassHEEPV70Vals;
+  std::vector<float> hoeLooseBarrelVals;
+  std::vector<float> hoeLooseEndcapVals;
+
   typename std::vector<T>::const_iterator probe, endprobes = probes->end();
 
   for (probe = probes->begin(); probe != endprobes; ++probe) {
@@ -158,6 +174,16 @@ void ElectronVariableHelper<T>::produce(edm::Event & iEvent, const edm::EventSet
     float IP      = fabs(l.dB(pat::Electron::PV3D));
     float IPError = l.edB(pat::Electron::PV3D);
     sipVals.push_back(IP/IPError);
+
+    passConversionVetoVals.push_back( probe->passConversionVeto() );
+    float isPassHEEPV70 = probe->electronID("heepElectronID-HEEPV70");
+    isPassHEEPV70Vals.push_back(isPassHEEPV70);
+
+    float scEnergy = probe->superCluster()->energy();
+    float hoe_loose_barrel = 0.05 + 1.16/scEnergy + 0.0324*rho/scEnergy;
+    float hoe_loose_endcap = 0.0441 + 2.54/scEnergy + 0.183*rho/scEnergy;
+    hoeLooseBarrelVals.push_back(hoe_loose_barrel);
+    hoeLooseEndcapVals.push_back(hoe_loose_endcap);
 
     mhVals.push_back(float(probe->gsfTrack()->hitPattern().numberOfLostHits(reco::HitPattern::MISSING_INNER_HITS)));
     gsfhVals.push_back(float(probe->gsfTrack()->hitPattern().trackerLayersWithMeasurement()));
@@ -252,7 +278,10 @@ void ElectronVariableHelper<T>::produce(edm::Event & iEvent, const edm::EventSet
   store("ioemiop", ioemiopVals, probes, iEvent);
   store("5x5circularity", ocVals, probes, iEvent);
 
-
+  store("passConversionVeto", passConversionVetoVals, probes, iEvent); 
+  store("isPassHEEPV70", isPassHEEPV70Vals, probes, iEvent);
+  store("hoeLooseBarrel", hoeLooseBarrelVals, probes, iEvent);
+  store("hoeLooseEndcap", hoeLooseEndcapVals, probes, iEvent); 
 }
 
 #endif

@@ -17,14 +17,14 @@ varOptions.register(
     )
 
 varOptions.register(
-    "doEleID", True,
+    "doEleID", False,
     VarParsing.multiplicity.singleton,
     VarParsing.varType.bool,
     "Include tree for photon ID SF"
     )
 
 varOptions.register(
-    "doPhoID", True,
+    "doPhoID", False,
     VarParsing.multiplicity.singleton,
     VarParsing.varType.bool,
     "Include tree for photon ID SF"
@@ -60,11 +60,11 @@ varOptions.register(
     )
 
 varOptions.register(
-    #"GT","auto",
+    "GT","auto",
     #"GT","101X_dataRun2_Prompt_v9",
     #"GT","94X_dataRun2_ReReco_EOY17_v6",
     #"GT","80X_dataRun2_2016LegacyRepro_v4",
-    "GT","80X_mcRun2_asymptotic_2016_TrancheIV_v8",
+    #"GT","80X_mcRun2_asymptotic_2016_TrancheIV_v8",
     VarParsing.multiplicity.singleton,
     VarParsing.varType.string,
     "Global Tag to be used"
@@ -135,24 +135,29 @@ if (varOptions.isMC):
 #    options['TnPHLTTagFilters']    = cms.vstring()
 #    options['TnPHLTProbeFilters']  = cms.vstring()
 #    options['HLTFILTERTOMEASURE']  = cms.vstring("")
-    options['TnPPATHS']            = cms.vstring("HLT_Ele27_eta2p1_WPTight_Gsf_v*") #FOR 2016
-    options['TnPHLTTagFilters']    = cms.vstring("hltEle27erWPTightGsfTrackIsoFilter") #FOR 2016
-    options['HLTFILTERTOMEASURE']  = cms.vstring("hltEle27erWPTightGsfTrackIsoFilter") #FOR 2016
-#    options['TnPPATHS']            = cms.vstring("HLT_Ele32_WPTight_Gsf_L1DoubleEG_v*")
-#    options['TnPHLTTagFilters']    = cms.vstring("hltEle32L1DoubleEGWPTightGsfTrackIsoFilter","hltEGL1SingleEGOrFilter")
-    #options['TnPHLTTagFilters']    = cms.vstring("hltEle32L1DoubleEGWPTightGsfTrackIsoFilter")
-    options['TnPHLTProbeFilters']  = cms.vstring()
-#    options['HLTFILTERTOMEASURE']  = cms.vstring("hltEle32L1DoubleEGWPTightGsfTrackIsoFilter")
+#    options['TnPPATHS']            = cms.vstring("HLT_Ele27_eta2p1_WPTight_Gsf_v*") #FOR 2016
+#    options['TnPHLTTagFilters']    = cms.vstring("hltEle27erWPTightGsfTrackIsoFilter") #FOR 2016
+#    options['HLTFILTERTOMEASURE']  = cms.vstring("hltEle27erWPTightGsfTrackIsoFilter") #FOR 2016
+    options['TnPPATHS']            = cms.vstring("HLT_DoublePhoton60_v*")
+#    options['TnPHLTTagFilters']    = cms.vstring("hltEle27erWPTightGsfTrackIsoFilter","hltEG60HEFilter")
+#    options['TnPHLTProbeFilters']  = cms.vstring()
+#    options['HLTFILTERTOMEASURE']  = cms.vstring("hltDiEG60HEUnseededFilter")
+    options['TnPHLTTagFilters']    = cms.vstring("hltDiEG60HEUnseededFilter","hltEG60HEFilter")
+    options['TnPHLTProbeFilters']  = cms.vstring("hltDiEG60HEUnseededFilter")
+    options['HLTFILTERTOMEASURE']  = cms.vstring("hltEG60HEFilter")
     options['GLOBALTAG']           = 'auto:run2_mc'
 else:
     options['OUTPUT_FILE_NAME']    = "TnPTree_data.root"
-    options['TnPPATHS']            = cms.vstring("HLT_Ele27_eta2p1_WPTight_Gsf_v*") #FOR 2016
-    options['TnPHLTTagFilters']    = cms.vstring("hltEle27erWPTightGsfTrackIsoFilter") #FOR 2016
-#    options['TnPPATHS']            = cms.vstring("HLT_Ele32_WPTight_Gsf_L1DoubleEG_v*")
-#    options['TnPHLTTagFilters']    = cms.vstring("hltEle32L1DoubleEGWPTightGsfTrackIsoFilter","hltEGL1SingleEGOrFilter")
-    #options['TnPHLTTagFilters']    = cms.vstring("hltEle32L1DoubleEGWPTightGsfTrackIsoFilter")
-    options['TnPHLTProbeFilters']  = cms.vstring()
-    options['HLTFILTERTOMEASURE']  = cms.vstring("hltEle32L1DoubleEGWPTightGsfTrackIsoFilter")
+#    options['TnPPATHS']            = cms.vstring("HLT_Ele27_eta2p1_WPTight_Gsf_v*") #FOR 2016
+#    options['TnPHLTTagFilters']    = cms.vstring("hltEle27erWPTightGsfTrackIsoFilter") #FOR 2016
+#    options['HLTFILTERTOMEASURE']  = cms.vstring("hltEle27erWPTightGsfTrackIsoFilter")
+    options['TnPPATHS']            = cms.vstring("HLT_DoublePhoton60_v*")
+#    options['TnPHLTTagFilters']    = cms.vstring("hltEle27erWPTightGsfTrackIsoFilter","hltEG60HEFilter")
+#    options['TnPHLTProbeFilters']  = cms.vstring()
+#    options['HLTFILTERTOMEASURE']  = cms.vstring("hltDiEG60HEUnseededFilter")
+    options['TnPHLTTagFilters']    = cms.vstring("hltDiEG60HEUnseededFilter","hltEG60HEFilter")
+    options['TnPHLTProbeFilters']  = cms.vstring("hltDiEG60HEUnseededFilter")
+    options['HLTFILTERTOMEASURE']  = cms.vstring("hltEG60HEFilter")
     options['GLOBALTAG']           = 'auto:run2_data'
 
 if varOptions.GT != "auto" :
@@ -171,7 +176,10 @@ from EgammaAnalysis.TnPTreeProducer.etc.tnpInputTestFiles_cff import filesMiniAO
 #if options['useAOD'] : from EgammaAnalysis.TnPTreeProducer.etc.tnpInputTestFiles_cff import filesAOD_empty as inputs #switch to 2017 samples if want to cmsRun on AOD
     
 options['INPUT_FILE_NAME'] = inputs['data']
+#options['INPUT_FILE_NAME'] = cms.untracked.vstring('file:/eos/user/h/helee/miniAOD_2016_V2/data/52F89FE4-D88B-E811-A095-0CC47A7C3430.root')
 if varOptions.isMC:  options['INPUT_FILE_NAME'] =  inputs['mc']
+#if varOptions.isMC:  options['INPUT_FILE_NAME'] = cms.untracked.vstring('file:/eos/user/h/helee/miniAOD_2016_V2/mc/madgraph/DEE4F680-14E9-E811-9CE7-48FD8EE73A8D.root')
+#if varOptions.isMC:  options['INPUT_FILE_NAME'] = cms.untracked.vstring('file:/eos/user/h/helee/miniAOD_2016_V2/mc/amcatnlo/FEF89E38-48C7-E811-BF05-002590D9D8B8.root')
 
 #for file in open("file.list").readlines():
 #    inputs['data'].append(file.strip())

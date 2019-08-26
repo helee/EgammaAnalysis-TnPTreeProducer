@@ -122,6 +122,12 @@ EleProbeVariablesToStore = cms.PSet(
     el_eelepout       = cms.string("eEleClusterOverPout()"),
     el_IoEmIop        = cms.InputTag("eleVarHelper:ioemiop"),
 
+    ## Necessary variables for probes
+    el_passConversionVeto = cms.InputTag("eleVarHelper:passConversionVeto"),
+    el_isPassHEEPV70  = cms.InputTag("eleVarHelper:isPassHEEPV70"),
+    el_hoe_barrel    = cms.InputTag("eleVarHelper:hoeLooseBarrel"),
+    el_hoe_endcap    = cms.InputTag("eleVarHelper:hoeLooseEndcap"),
+
     )
 
 PhoProbeVariablesToStore = cms.PSet(
@@ -189,6 +195,17 @@ TagVariablesToStore = cms.PSet(
     Ele_IsoMVA94X   = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Fall17IsoV1Values"),
     Ele_noIsoMVA94XV2   = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Fall17NoIsoV2Values"), 
     Ele_IsoMVA94XV2   = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Fall17IsoV2Values"),
+
+    ## Necessary variables for tags
+    Ele_5x5_sieie          = cms.string("full5x5_showerShape().sigmaIetaIeta"),
+    Ele_dEtaSeed           = cms.string("deltaEtaSuperClusterTrackAtVtx+log(tan(superCluster.position.theta/2))-log(tan(superCluster.seed.position.theta/2))"),
+    Ele_dPhiIn             = cms.string("deltaPhiSuperClusterTrackAtVtx"),
+    Ele_1overEminus1overP  = cms.string("abs(1-eSuperClusterOverP())/ecalEnergy()"),
+    Ele_hoe           = cms.string("hadronicOverEm()"),
+    Ele_hoe_barrel    = cms.InputTag("eleVarHelper:hoeLooseBarrel"),
+    Ele_hoe_endcap    = cms.InputTag("eleVarHelper:hoeLooseEndcap"), 
+    Ele_passConversionVeto = cms.InputTag("eleVarHelper:passConversionVeto"),
+    Ele_isPassHEEPV70  = cms.InputTag("eleVarHelper:isPassHEEPV70"),
 
     )
 

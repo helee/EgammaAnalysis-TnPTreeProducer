@@ -69,6 +69,7 @@ def setGoodParticlesMiniAOD(process, options):
                                           vertexCollection = cms.InputTag("offlineSlimmedPrimaryVertices"),
                                           beamSpot         = cms.InputTag("offlineBeamSpot"),
                                           conversions      = cms.InputTag("reducedEgamma:reducedConversions"),
+                                          rhoLabel         = cms.InputTag("fixedGridRhoFastjetAll"),
                                           #pfCandColl       = cms.InputTag("packedPFCandidates"),
                                           )
 
