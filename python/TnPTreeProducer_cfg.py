@@ -25,14 +25,14 @@ varOptions.register(
 
 
 varOptions.register(
-    "doEleID", True,
+    "doEleID", False,
     VarParsing.multiplicity.singleton,
     VarParsing.varType.bool,
     "Include tree for photon ID SF"
     )
 
 varOptions.register(
-    "doPhoID", True,
+    "doPhoID", False,
     VarParsing.multiplicity.singleton,
     VarParsing.varType.bool,
     "Include tree for photon ID SF"
@@ -147,37 +147,73 @@ options['GLOBALTAG']            = varOptions.GT if varOptions.GT != "auto" else 
 #################################################
 if options['era'] == '2016':
   options['TnPPATHS']           = cms.vstring("HLT_Ele27_eta2p1_WPTight_Gsf_v*")
-  options['TnPHLTTagFilters']   = cms.vstring("hltEle27erWPTightGsfTrackIsoFilter")
+  ## Filter 1
+  options['TnPHLTTagFilters']   = cms.vstring("hltEle27erWPTightGsfTrackIsoFilter","hltEG60HEFilter")
   options['TnPHLTProbeFilters'] = cms.vstring()
-  options['HLTFILTERSTOMEASURE']= {"passHltEle27WPTightGsf" :                           cms.vstring("hltEle27WPTightGsfTrackIsoFilter"),
-                                   "passHltEle23Ele12CaloIdLTrackIdLIsoVLLeg1L1match" : cms.vstring("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg1Filter"),
-                                   "passHltEle23Ele12CaloIdLTrackIdLIsoVLLeg2" :        cms.vstring("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg2Filter"),
-                                   "passHltDoubleEle33CaloIdLMWSeedLegL1match" :        cms.vstring("hltEG33CaloIdLMWPMS2Filter"),
-                                   "passHltDoubleEle33CaloIdLMWUnsLeg" :                cms.vstring("hltDiEle33CaloIdLMWPMS2UnseededFilter"),
-                                  } # Some examples, you can add multiple filters (or OR's of filters, note the vstring) here, each of them will be added to the tuple
+  options['HLTFILTERSTOMEASURE']= {"passhltDiEG60HEUnseededFilter" :                    cms.vstring("hltDiEG60HEUnseededFilter"),
+                                  }
+  ## Filter 2
+#  options['TnPHLTTagFilters']   = cms.vstring("hltEle27erWPTightGsfTrackIsoFilter","hltDiEG60HEUnseededFilter","hltEG60HEFilter")
+#  options['TnPHLTProbeFilters'] = cms.vstring("hltDiEG60HEUnseededFilter")
+#  options['HLTFILTERSTOMEASURE']= {"passhltEG60HEFilter" :                              cms.vstring("hltEG60HEFilter"),
+#                                  }
+
+#  options['TnPPATHS']           = cms.vstring("HLT_Ele27_eta2p1_WPTight_Gsf_v*")
+#  options['TnPHLTTagFilters']   = cms.vstring("hltEle27erWPTightGsfTrackIsoFilter")
+#  options['TnPHLTProbeFilters'] = cms.vstring()
+#  options['HLTFILTERSTOMEASURE']= {"passHltEle27WPTightGsf" :                           cms.vstring("hltEle27WPTightGsfTrackIsoFilter"),
+#                                   "passHltEle23Ele12CaloIdLTrackIdLIsoVLLeg1L1match" : cms.vstring("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg1Filter"),
+#                                   "passHltEle23Ele12CaloIdLTrackIdLIsoVLLeg2" :        cms.vstring("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg2Filter"),
+#                                   "passHltDoubleEle33CaloIdLMWSeedLegL1match" :        cms.vstring("hltEG33CaloIdLMWPMS2Filter"),
+#                                   "passHltDoubleEle33CaloIdLMWUnsLeg" :                cms.vstring("hltDiEle33CaloIdLMWPMS2UnseededFilter"),
+#                                  } # Some examples, you can add multiple filters (or OR's of filters, note the vstring) here, each of them will be added to the tuple
 
 elif options['era'] == '2017':
   options['TnPPATHS']           = cms.vstring("HLT_Ele32_WPTight_Gsf_L1DoubleEG_v*")
-  options['TnPHLTTagFilters']   = cms.vstring("hltEle32L1DoubleEGWPTightGsfTrackIsoFilter","hltEGL1SingleEGOrFilter")
+  ## Filter 1
+  options['TnPHLTTagFilters']   = cms.vstring("hltEle32L1DoubleEGWPTightGsfTrackIsoFilter","hltEGL1SingleEGOrFilter","hltEG70HEFilter")
   options['TnPHLTProbeFilters'] = cms.vstring()
-  options['HLTFILTERSTOMEASURE']= {"passHltEle32DoubleEGWPTightGsf" :                   cms.vstring("hltEle32L1DoubleEGWPTightGsfTrackIsoFilter"),
-                                   "passEGL1SingleEGOr" :                               cms.vstring("hltEGL1SingleEGOrFilter"),
-                                   "passHltEle23Ele12CaloIdLTrackIdLIsoVLLeg1L1match" : cms.vstring("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg1Filter"),
-                                   "passHltEle23Ele12CaloIdLTrackIdLIsoVLLeg2" :        cms.vstring("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg2Filter"),
-                                   "passHltDoubleEle33CaloIdLMWSeedLegL1match" :        cms.vstring("hltEle33CaloIdLMWPMS2Filter"),
-                                   "passHltDoubleEle33CaloIdLMWUnsLeg" :                cms.vstring("hltDiEle33CaloIdLMWPMS2UnseededFilter"),
+  options['HLTFILTERSTOMEASURE']= {"passhltDiEG70HEUnseededFilter" :                    cms.vstring("hltDiEG70HEUnseededFilter"),
                                   }
+  ## Filter 2
+#  options['TnPHLTTagFilters']   = cms.vstring("hltEle32L1DoubleEGWPTightGsfTrackIsoFilter","hltEGL1SingleEGOrFilter","hltDiEG70HEUnseededFilter","hltEG70HEFilter")
+#  options['TnPHLTProbeFilters'] = cms.vstring("hltDiEG70HEUnseededFilter")
+#  options['HLTFILTERSTOMEASURE']= {"passhltEG70HEFilter" :                              cms.vstring("hltEG70HEFilter"),
+#                                  }
+
+#  options['TnPPATHS']           = cms.vstring("HLT_Ele32_WPTight_Gsf_L1DoubleEG_v*")
+#  options['TnPHLTTagFilters']   = cms.vstring("hltEle32L1DoubleEGWPTightGsfTrackIsoFilter","hltEGL1SingleEGOrFilter")
+#  options['TnPHLTProbeFilters'] = cms.vstring()
+#  options['HLTFILTERSTOMEASURE']= {"passHltEle32DoubleEGWPTightGsf" :                   cms.vstring("hltEle32L1DoubleEGWPTightGsfTrackIsoFilter"),
+#                                   "passEGL1SingleEGOr" :                               cms.vstring("hltEGL1SingleEGOrFilter"),
+#                                   "passHltEle23Ele12CaloIdLTrackIdLIsoVLLeg1L1match" : cms.vstring("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg1Filter"),
+#                                   "passHltEle23Ele12CaloIdLTrackIdLIsoVLLeg2" :        cms.vstring("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg2Filter"),
+#                                   "passHltDoubleEle33CaloIdLMWSeedLegL1match" :        cms.vstring("hltEle33CaloIdLMWPMS2Filter"),
+#                                   "passHltDoubleEle33CaloIdLMWUnsLeg" :                cms.vstring("hltDiEle33CaloIdLMWPMS2UnseededFilter"),
+#                                  }
 
 elif options['era'] == '2018':
   options['TnPPATHS']           = cms.vstring("HLT_Ele32_WPTight_Gsf_v*")
-  options['TnPHLTTagFilters']   = cms.vstring("hltEle32WPTightGsfTrackIsoFilter")
+  ## Filter 1
+  options['TnPHLTTagFilters']   = cms.vstring("hltEle32WPTightGsfTrackIsoFilter","hltEG70HEFilter")
   options['TnPHLTProbeFilters'] = cms.vstring()
-  options['HLTFILTERSTOMEASURE']= {"passHltEle32WPTightGsf" :                           cms.vstring("hltEle32WPTightGsfTrackIsoFilter"),
-                                   "passHltEle23Ele12CaloIdLTrackIdLIsoVLLeg1L1match" : cms.vstring("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg1Filter"),
-                                   "passHltEle23Ele12CaloIdLTrackIdLIsoVLLeg2" :        cms.vstring("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg2Filter"),
-                                   "passHltDoubleEle33CaloIdLMWSeedLegL1match" :        cms.vstring("hltEle33CaloIdLMWPMS2Filter"),
-                                   "passHltDoubleEle33CaloIdLMWUnsLeg" :                cms.vstring("hltDiEle33CaloIdLMWPMS2UnseededFilter"),
+  options['HLTFILTERSTOMEASURE']= {"passhltDiEG70HEUnseededFilter" :                    cms.vstring("hltDiEG70HEUnseededFilter"),
                                   }
+  ## Filter 2
+#  options['TnPHLTTagFilters']   = cms.vstring("hltEle32WPTightGsfTrackIsoFilter","hltDiEG70HEUnseededFilter","hltEG70HEFilter")
+#  options['TnPHLTProbeFilters'] = cms.vstring("hltDiEG70HEUnseededFilter")
+#  options['HLTFILTERSTOMEASURE']= {"passhltEG70HEFilter" :                              cms.vstring("hltEG70HEFilter"),
+#                                  }
+
+#  options['TnPPATHS']           = cms.vstring("HLT_Ele32_WPTight_Gsf_v*")
+#  options['TnPHLTTagFilters']   = cms.vstring("hltEle32WPTightGsfTrackIsoFilter")
+#  options['TnPHLTProbeFilters'] = cms.vstring()
+#  options['HLTFILTERSTOMEASURE']= {"passHltEle32WPTightGsf" :                           cms.vstring("hltEle32WPTightGsfTrackIsoFilter"),
+#                                   "passHltEle23Ele12CaloIdLTrackIdLIsoVLLeg1L1match" : cms.vstring("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg1Filter"),
+#                                   "passHltEle23Ele12CaloIdLTrackIdLIsoVLLeg2" :        cms.vstring("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg2Filter"),
+#                                   "passHltDoubleEle33CaloIdLMWSeedLegL1match" :        cms.vstring("hltEle33CaloIdLMWPMS2Filter"),
+#                                   "passHltDoubleEle33CaloIdLMWUnsLeg" :                cms.vstring("hltDiEle33CaloIdLMWPMS2UnseededFilter"),
+#                                  }
 else:
   print '%s is not a valid era' % options['era']
 

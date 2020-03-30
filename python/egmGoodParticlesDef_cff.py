@@ -70,6 +70,7 @@ def setGoodParticlesMiniAOD(process, options):
                                           beamSpot         = cms.InputTag("offlineBeamSpot"),
                                           conversions      = cms.InputTag("reducedEgamma:reducedConversions"),
                                           #pfCandColl       = cms.InputTag("packedPFCandidates"),
+                                          rho              = cms.InputTag("fixedGridRhoFastjetAll"),
                                           )
 
     ####################  Electron collection

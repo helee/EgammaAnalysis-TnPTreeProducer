@@ -57,6 +57,7 @@ private:
   edm::EDGetTokenT<reco::ConversionCollection> conversionsToken_;
   edm::EDGetTokenT<reco::BeamSpot> beamSpotToken_;
   edm::EDGetTokenT<pat::PackedCandidateCollection> pfCandidatesToken_;
+  edm::EDGetTokenT<double> rhoToken_;
 };
 
 template<class T>
@@ -66,7 +67,8 @@ ElectronVariableHelper<T>::ElectronVariableHelper(const edm::ParameterSet & iCon
   l1EGToken_(consumes<BXVector<l1t::EGamma> >(iConfig.getParameter<edm::InputTag>("l1EGColl"))),
   conversionsToken_(consumes<reco::ConversionCollection>(iConfig.getParameter<edm::InputTag>("conversions"))),
   beamSpotToken_(consumes<reco::BeamSpot>(iConfig.getParameter<edm::InputTag>("beamSpot"))),
-  pfCandidatesToken_(consumes<pat::PackedCandidateCollection>(edm::InputTag("packedPFCandidates"))) {
+  pfCandidatesToken_(consumes<pat::PackedCandidateCollection>(edm::InputTag("packedPFCandidates"))),
+  rhoToken_(consumes<double>(iConfig.getParameter<edm::InputTag>("rho"))) {
 
   produces<edm::ValueMap<float> >("dz");
   produces<edm::ValueMap<float> >("dxy");
@@ -84,6 +86,11 @@ ElectronVariableHelper<T>::ElectronVariableHelper(const edm::ParameterSet & iCon
   produces<edm::ValueMap<float> >("ioemiop");
   produces<edm::ValueMap<float> >("5x5circularity");
   produces<edm::ValueMap<float> >("pfLeptonIsolation");
+
+  produces<edm::ValueMap<float> >("hoeCutValue");
+  produces<edm::ValueMap<float> >("emhadIsoCutValue");
+  produces<edm::ValueMap<float> >("isPassHEEPV70");
+  produces<edm::ValueMap<float> >("isPassHEEPV70For2018");
 
   if( iConfig.existsAs<edm::InputTag>("pfCandColl") ) {
     pfCandToken_ = consumes<CandView>(iConfig.getParameter<edm::InputTag>("pfCandColl"));
@@ -120,6 +127,10 @@ void ElectronVariableHelper<T>::produce(edm::Event & iEvent, const edm::EventSet
   edm::Handle<CandView> pfCands;
   if( !pfCandToken_.isUninitialized() ) iEvent.getByToken(pfCandToken_,pfCands);
 
+  edm::Handle<double> rhoHandle;
+  iEvent.getByToken(rhoToken_, rhoHandle);
+  double Rho = *rhoHandle;
+
   // prepare vector for output
   std::vector<float> dzVals;
   std::vector<float> dxyVals;
@@ -138,6 +149,11 @@ void ElectronVariableHelper<T>::produce(edm::Event & iEvent, const edm::EventSet
   std::vector<float> ocVals;
 
   std::vector<float> gsfhVals;
+
+  std::vector<float> hoeCutValueVals;
+  std::vector<float> emhadIsoCutValueVals;
+  std::vector<float> isPassHEEPV70Vals;
+  std::vector<float> isPassHEEPV70For2018Vals;
 
   typename std::vector<T>::const_iterator probe, endprobes = probes->end();
 
@@ -225,6 +241,38 @@ void ElectronVariableHelper<T>::produce(edm::Event & iEvent, const edm::EventSet
     }
 
     ioemiopVals.push_back(ele_IoEmIop);
+
+    // For the HN analysis
+    float scEta = probe->superCluster()->eta();
+    float scEnergy = probe->superCluster()->energy();
+    float et = probe->et();
+    float hoe = probe->hadronicOverEm();
+    float ecaliso = probe->dr03EcalRecHitSumEt();
+    float hcaliso = probe->dr03HcalDepth1TowerSumEt();
+
+    float hoeCutValue = (-0.4 + 0.4*fabs(scEta)) * Rho / scEnergy + 0.05;
+    float emhadIsoCutValue = 2.5 + (0.15 + 0.07*fabs(scEta)) * Rho;
+    if(et > 50.) emhadIsoCutValue = 2.5 + 0.03*(et - 50.) + (0.15 + 0.07*fabs(scEta)) * Rho;
+    // Original cut values
+/*    float hoeCutValue = 5/scEnergy + 0.05;
+    float emhadIsoCutValue = 2.5 + 0.28*Rho;
+    if(et > 50.) emhadIsoCutValue = 2.5 + 0.03*(et - 50.) + 0.28*Rho;*/
+    hoeCutValueVals.push_back(hoeCutValue);
+    emhadIsoCutValueVals.push_back(emhadIsoCutValue);
+
+    float isPassHEEPV70 = probe->electronID("heepElectronID-HEEPV70");
+    isPassHEEPV70Vals.push_back(isPassHEEPV70);
+
+    int IDcutBit = probe->userInt("heepElectronID-HEEPV70");
+    float isPassHEEPV70For2018 = 0;
+    if(fabs(scEta) < 1.566){
+      if(isPassHEEPV70 == 1) isPassHEEPV70For2018 = 1;
+    }
+    else{  // 4095 - 2^6 - 2^8 = 3775
+      if(((IDcutBit&3775) == 3775) && (hoe < hoeCutValue) && (ecaliso + hcaliso < emhadIsoCutValue)) isPassHEEPV70For2018 = 1;
+    }
+    isPassHEEPV70For2018Vals.push_back(isPassHEEPV70For2018);
+
   }
 
   // PF lepton isolations
@@ -253,6 +301,11 @@ void ElectronVariableHelper<T>::produce(edm::Event & iEvent, const edm::EventSet
   writeValueMap(iEvent, probes, ioemiopVals, "ioemiop");
   writeValueMap(iEvent, probes, ocVals, "5x5circularity");
   writeValueMap(iEvent, probes, pfLeptonIsolations, "pfLeptonIsolation");
+
+  writeValueMap(iEvent, probes, hoeCutValueVals, "hoeCutValue");
+  writeValueMap(iEvent, probes, emhadIsoCutValueVals, "emhadIsoCutValue");
+  writeValueMap(iEvent, probes, isPassHEEPV70Vals, "isPassHEEPV70");
+  writeValueMap(iEvent, probes, isPassHEEPV70For2018Vals, "isPassHEEPV70For2018");
 }
 
 #endif

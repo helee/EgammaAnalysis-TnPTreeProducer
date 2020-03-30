@@ -126,6 +126,12 @@ EleProbeVariablesToStore = cms.PSet(
     el_eelepout       = cms.string("eEleClusterOverPout()"),
     el_IoEmIop        = cms.InputTag("eleVarHelper:ioemiop"),
 
+    # Fof the HN analysis
+    el_hoeCutValue              = cms.InputTag("eleVarHelper:hoeCutValue"),
+    el_emhadIsoCutValue         = cms.InputTag("eleVarHelper:emhadIsoCutValue"),
+    el_dr03HcalDepth1TowerSumEt = cms.string("dr03HcalDepth1TowerSumEt"),
+    el_isPassHEEPV70            = cms.InputTag("eleVarHelper:isPassHEEPV70"),
+    el_isPassHEEPV70For2018     = cms.InputTag("eleVarHelper:isPassHEEPV70For2018"),
     )
 
 PhoProbeVariablesToStore = cms.PSet(
@@ -201,6 +207,16 @@ TagVariablesToStore = cms.PSet(
     Ele_IsoMVA94X   = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Fall17IsoV1Values"),
     Ele_noIsoMVA94XV2   = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Fall17NoIsoV2Values"), 
     Ele_IsoMVA94XV2   = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Fall17IsoV2Values"),
+
+    ## For the HN analysis
+    Ele_hoeCutValue              = cms.InputTag("eleVarHelper:hoeCutValue"),
+    Ele_emhadIsoCutValue         = cms.InputTag("eleVarHelper:emhadIsoCutValue"),
+    Ele_dr03EcalRecHitSumEt      = cms.string("dr03EcalRecHitSumEt"),
+    Ele_dr03HcalDepth1TowerSumEt = cms.string("dr03HcalDepth1TowerSumEt"),
+    Ele_hoe                      = cms.string("hadronicOverEm()"),
+    Ele_isPassHEEPV70            = cms.InputTag("eleVarHelper:isPassHEEPV70"),
+    Ele_isPassHEEPV70For2018     = cms.InputTag("eleVarHelper:isPassHEEPV70For2018"),
+
     )
 
 CommonStuffForGsfElectronProbe = cms.PSet(
