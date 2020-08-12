@@ -87,6 +87,11 @@ ElectronVariableHelper<T>::ElectronVariableHelper(const edm::ParameterSet & iCon
   produces<edm::ValueMap<float> >("5x5circularity");
   produces<edm::ValueMap<float> >("pfLeptonIsolation");
 
+  produces<edm::ValueMap<float> >("isPassConversionVeto");
+  produces<edm::ValueMap<float> >("full5x5sigmaIetaIeta");
+  produces<edm::ValueMap<float> >("hoeCutValueForLooseEB");
+  produces<edm::ValueMap<float> >("hoeCutValueForLooseEE");
+
   produces<edm::ValueMap<float> >("hoeCutValue");
   produces<edm::ValueMap<float> >("emhadIsoCutValue");
   produces<edm::ValueMap<float> >("isPassHEEPV70");
@@ -149,6 +154,11 @@ void ElectronVariableHelper<T>::produce(edm::Event & iEvent, const edm::EventSet
   std::vector<float> ocVals;
 
   std::vector<float> gsfhVals;
+
+  std::vector<float> isPassConversionVetoVals;
+  std::vector<float> full5x5sigmaIetaIetaVals;
+  std::vector<float> hoeCutValueForLooseEBVals;
+  std::vector<float> hoeCutValueForLooseEEVals;
 
   std::vector<float> hoeCutValueVals;
   std::vector<float> emhadIsoCutValueVals;
@@ -242,7 +252,7 @@ void ElectronVariableHelper<T>::produce(edm::Event & iEvent, const edm::EventSet
 
     ioemiopVals.push_back(ele_IoEmIop);
 
-    // For the HN analysis
+    // For Z'toNN
     float scEta = probe->superCluster()->eta();
     float scEnergy = probe->superCluster()->energy();
     float et = probe->et();
@@ -250,15 +260,28 @@ void ElectronVariableHelper<T>::produce(edm::Event & iEvent, const edm::EventSet
     float ecaliso = probe->dr03EcalRecHitSumEt();
     float hcaliso = probe->dr03HcalDepth1TowerSumEt();
 
+    isPassConversionVetoVals.push_back( probe->passConversionVeto() );
+    full5x5sigmaIetaIetaVals.push_back( probe->full5x5_sigmaIetaIeta() );
+    float hoeCutValueForLooseEB = 0.05 + 1.16/scEnergy + 0.0324*Rho/scEnergy;
+    float hoeCutValueForLooseEE = 0.0441 + 2.54/scEnergy + 0.183*Rho/scEnergy;
+    hoeCutValueForLooseEBVals.push_back(hoeCutValueForLooseEB);
+    hoeCutValueForLooseEEVals.push_back(hoeCutValueForLooseEE);
+
     float hoeCutValue = (-0.4 + 0.4*fabs(scEta)) * Rho / scEnergy + 0.05;
     float emhadIsoCutValue = 2.5 + (0.15 + 0.07*fabs(scEta)) * Rho;
     if(et > 50.) emhadIsoCutValue = 2.5 + 0.03*(et - 50.) + (0.15 + 0.07*fabs(scEta)) * Rho;
     // Original cut values
-/*    float hoeCutValue = 5/scEnergy + 0.05;
+    /*float hoeCutValue = 5/scEnergy + 0.05;
     float emhadIsoCutValue = 2.5 + 0.28*Rho;
     if(et > 50.) emhadIsoCutValue = 2.5 + 0.03*(et - 50.) + 0.28*Rho;*/
     hoeCutValueVals.push_back(hoeCutValue);
     emhadIsoCutValueVals.push_back(emhadIsoCutValue);
+
+    /*int IDcutBitLoose = probe->userInt("cutBasedElectronID-Fall17-94X-V2-loose"); // Only valid for 2018 dataset
+    float isPassLooseNoIso = 0;
+    // 1023 - 2^7 = 895 
+    if((IDcutBitLoose&895) == 895) isPassLooseNoIso = 1; 
+    isPassLooseNoIsoVals.push_back(isPassLooseNoIso);*/
 
     float isPassHEEPV70 = probe->electronID("heepElectronID-HEEPV70");
     isPassHEEPV70Vals.push_back(isPassHEEPV70);
@@ -301,6 +324,11 @@ void ElectronVariableHelper<T>::produce(edm::Event & iEvent, const edm::EventSet
   writeValueMap(iEvent, probes, ioemiopVals, "ioemiop");
   writeValueMap(iEvent, probes, ocVals, "5x5circularity");
   writeValueMap(iEvent, probes, pfLeptonIsolations, "pfLeptonIsolation");
+
+  writeValueMap(iEvent, probes, isPassConversionVetoVals, "isPassConversionVeto");
+  writeValueMap(iEvent, probes, full5x5sigmaIetaIetaVals, "full5x5sigmaIetaIeta");
+  writeValueMap(iEvent, probes, hoeCutValueForLooseEBVals, "hoeCutValueForLooseEB");
+  writeValueMap(iEvent, probes, hoeCutValueForLooseEEVals, "hoeCutValueForLooseEE");
 
   writeValueMap(iEvent, probes, hoeCutValueVals, "hoeCutValue");
   writeValueMap(iEvent, probes, emhadIsoCutValueVals, "emhadIsoCutValue");
