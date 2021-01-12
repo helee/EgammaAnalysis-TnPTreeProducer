@@ -79,6 +79,20 @@ ElectronVariableHelper<T>::ElectronVariableHelper(const edm::ParameterSet & iCon
   produces<edm::ValueMap<float>>("pfLeptonIsolation");
   produces<edm::ValueMap<float>>("hasMatchedConversion");
 
+  produces<edm::ValueMap<float>>("relEcalIso");
+  produces<edm::ValueMap<float>>("relHcalIso");
+  produces<edm::ValueMap<float>>("relTrkIso");
+  produces<edm::ValueMap<float>>("ip2D");
+  produces<edm::ValueMap<float>>("ipDZ");
+  produces<edm::ValueMap<float>>("sip2D");
+  produces<edm::ValueMap<float>>("isPOGIP");
+  produces<edm::ValueMap<float>>("isPOGIP2D");
+  produces<edm::ValueMap<float>>("idCutForTrigger");
+  produces<edm::ValueMap<float>>("isoCutForTrigger");
+  produces<edm::ValueMap<float>>("isTightChargePt200");
+  produces<edm::ValueMap<float>>("isTightChargePt250");
+  produces<edm::ValueMap<float>>("isTightChargePt300");
+
   isMiniAODformat = true;
 }
 
@@ -132,6 +146,20 @@ void ElectronVariableHelper<T>::produce(edm::Event & iEvent, const edm::EventSet
 
   std::vector<float> hasMatchedConversionVals;
 
+  std::vector<float> relEcalIsoVals;
+  std::vector<float> relHcalIsoVals;
+  std::vector<float> relTrkIsoVals;
+  std::vector<float> ip2DVals;
+  std::vector<float> ipDZVals;
+  std::vector<float> sip2DVals;
+  std::vector<float> isPOGIPVals;
+  std::vector<float> isPOGIP2DVals;
+  std::vector<float> idCutForTriggerVals;
+  std::vector<float> isoCutForTriggerVals;
+  std::vector<float> isTightChargePt200Vals;
+  std::vector<float> isTightChargePt250Vals;
+  std::vector<float> isTightChargePt300Vals;
+
   typename std::vector<T>::const_iterator probe, endprobes = probes->end();
 
   for (probe = probes->begin(); probe != endprobes; ++probe) {
@@ -139,8 +167,11 @@ void ElectronVariableHelper<T>::produce(edm::Event & iEvent, const edm::EventSet
     //---Clone the pat::Electron
     pat::Electron l((pat::Electron)*probe);
 
-    dzVals.push_back(probe->gsfTrack()->dz(vtx->position()));
-    dxyVals.push_back(probe->gsfTrack()->dxy(vtx->position()));
+    float dxy = probe->gsfTrack()->dxy(vtx->position());
+    float dz  = probe->gsfTrack()->dz(vtx->position());
+
+    dxyVals.push_back(dxy);
+    dzVals.push_back(dz);
 
     // SIP
     float IP      = fabs(l.dB(pat::Electron::PV3D));
@@ -235,6 +266,55 @@ void ElectronVariableHelper<T>::produce(edm::Event & iEvent, const edm::EventSet
     }
 
     ioemiopVals.push_back(ele_IoEmIop);
+
+    // For typeI
+    float sieie = probe->full5x5_sigmaIetaIeta();
+    float hoe   = probe->hadronicOverEm();
+
+    float miniAODPt  = probe->pt();
+    float scEta = probe->superCluster()->eta();
+    float relEcalIso = probe->ecalPFClusterIso()/miniAODPt;
+    float relHcalIso = probe->hcalPFClusterIso()/miniAODPt;
+    float relTrkIso  = probe->dr03TkSumPt()/miniAODPt;
+
+    float ip2D       = l.dB(pat::Electron::PV2D);
+    float ipDZ       = l.dB(pat::Electron::PVDZ);
+    float ip2DError  = l.edB(pat::Electron::PV2D);
+    float sip2D      = fabs(ip2D)/ip2DError;
+
+    relEcalIsoVals.push_back(relEcalIso);
+    relHcalIsoVals.push_back(relHcalIso);
+    relTrkIsoVals.push_back(relTrkIso);
+    ip2DVals.push_back(ip2D);
+    ipDZVals.push_back(ipDZ);
+    sip2DVals.push_back(sip2D);
+
+
+    float isPOGIP = 0, isPOGIP2D = 0;
+    if( (fabs(scEta)<1.479 && fabs(dxy)<0.05 && fabs(dz)<0.1) || (fabs(scEta)>1.479 && fabs(dxy)<0.1 && fabs(dz)<0.2) ) isPOGIP = 1;
+    if( (fabs(scEta)<1.479 && fabs(ip2D)<0.05 && fabs(ipDZ)<0.1) || (fabs(scEta)>1.479 && fabs(ip2D)<0.1 && fabs(ipDZ)<0.2) ) isPOGIP2D = 1;
+
+    isPOGIPVals.push_back(isPOGIP);
+    isPOGIP2DVals.push_back(isPOGIP2D);
+
+
+    float passID = 0, passIso = 0;
+    if( (fabs(scEta)<1.479 && sieie<0.011 && hoe<0.08 && fabs(ele_IoEmIop)<0.01) || (fabs(scEta)>1.479 && sieie<0.031 && hoe<0.08 && fabs(ele_IoEmIop)<0.01) ) passID = 1;
+    if( relEcalIso<0.45 && relHcalIso<0.25 && relTrkIso<0.2 ) passIso = 1;
+ 
+    idCutForTriggerVals.push_back(passID);
+    isoCutForTriggerVals.push_back(passIso);
+
+
+    float isTightChargePt200 = 0, isTightChargePt250 = 0, isTightChargePt300 = 0;
+    float isTightCharge = probe->isGsfCtfChargeConsistent(); 
+    if( (miniAODPt<200. && isTightCharge==1) || miniAODPt>=200. ) isTightChargePt200 = 1;
+    if( (miniAODPt<250. && isTightCharge==1) || miniAODPt>=250. ) isTightChargePt250 = 1;
+    if( (miniAODPt<300. && isTightCharge==1) || miniAODPt>=300. ) isTightChargePt300 = 1;
+
+    isTightChargePt200Vals.push_back(isTightChargePt200);
+    isTightChargePt250Vals.push_back(isTightChargePt250);
+    isTightChargePt300Vals.push_back(isTightChargePt300);
   }
 
   // convert into ValueMap and store
@@ -254,6 +334,20 @@ void ElectronVariableHelper<T>::produce(edm::Event & iEvent, const edm::EventSet
   writeValueMap(iEvent, probes, ioemiopVals, "ioemiop");
   writeValueMap(iEvent, probes, ocVals, "5x5circularity");
   writeValueMap(iEvent, probes, hasMatchedConversionVals, "hasMatchedConversion");
+
+  writeValueMap(iEvent, probes, relEcalIsoVals, "relEcalIso");
+  writeValueMap(iEvent, probes, relHcalIsoVals, "relHcalIso");
+  writeValueMap(iEvent, probes, relTrkIsoVals, "relTrkIso");
+  writeValueMap(iEvent, probes, ip2DVals, "ip2D");
+  writeValueMap(iEvent, probes, ipDZVals, "ipDZ");
+  writeValueMap(iEvent, probes, sip2DVals, "sip2D");
+  writeValueMap(iEvent, probes, isPOGIPVals, "isPOGIP");
+  writeValueMap(iEvent, probes, isPOGIP2DVals, "isPOGIP2D");
+  writeValueMap(iEvent, probes, idCutForTriggerVals, "idCutForTrigger");
+  writeValueMap(iEvent, probes, isoCutForTriggerVals, "isoCutForTrigger");
+  writeValueMap(iEvent, probes, isTightChargePt200Vals, "isTightChargePt200");
+  writeValueMap(iEvent, probes, isTightChargePt250Vals, "isTightChargePt250");
+  writeValueMap(iEvent, probes, isTightChargePt300Vals, "isTightChargePt300");
 
   // PF lepton isolations (will only work in miniAOD)
   if(isMiniAODformat){

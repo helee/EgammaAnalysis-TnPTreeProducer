@@ -3,3 +3,6 @@
 __init__.py
 crab/prescaleInformation
 crab/crab*
+*.log
+crab3env.sh
+run_testjob.sh

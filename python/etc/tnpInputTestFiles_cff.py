@@ -3,18 +3,24 @@ import FWCore.ParameterSet.Config as cms
 # Some miniAOD testfiles, about 1000 events copied to our eos storage
 # (not running directly on datasets because they get moved around all the time and xrootd sucks)
 filesMiniAOD_2018 = {
-    'mc' :   cms.untracked.vstring('file:/eos/cms/store/group/phys_egamma/tnpTuples/testFiles/RunIIAutumn18MiniAOD-DYJetsToLL_M-50.root'),
-    'data' : cms.untracked.vstring('file:/eos/cms/store/group/phys_egamma/tnpTuples/testFiles/Egamma-Run2018A-17Sep2018-v2.root'),
+    #'mc' :   cms.untracked.vstring('file:/eos/cms/store/group/phys_egamma/tnpTuples/testFiles/RunIIAutumn18MiniAOD-DYJetsToLL_M-50.root'),
+    #'data' : cms.untracked.vstring('file:/eos/cms/store/group/phys_egamma/tnpTuples/testFiles/Egamma-Run2018A-17Sep2018-v2.root'),
+    'mc' :   cms.untracked.vstring('file:/eos/user/h/helee/miniAOD_2018_V1/mc/madgraph/FA870652-56D3-1E45-B1EE-EF8A8FC89506.root'),
+    'data' : cms.untracked.vstring('file:/eos/user/h/helee/miniAOD_2018_V1/data/FFD234BD-747F-9242-9EC3-4D3BC8E564B0.root'),
 }
 
 filesMiniAOD_2017 = {
-    'mc' :   cms.untracked.vstring('file:/eos/cms/store/group/phys_egamma/tnpTuples/testFiles/RunIIFall17MiniAODv2-DYJetsToLL_M-50.root'),
-    'data' : cms.untracked.vstring('file:/eos/cms/store/group/phys_egamma/tnpTuples/testFiles/SingleElectron-Run2017B-31Mar2018-v1.root'),
+    #'mc' :   cms.untracked.vstring('file:/eos/cms/store/group/phys_egamma/tnpTuples/testFiles/RunIIFall17MiniAODv2-DYJetsToLL_M-50.root'),
+    #'data' : cms.untracked.vstring('file:/eos/cms/store/group/phys_egamma/tnpTuples/testFiles/SingleElectron-Run2017B-31Mar2018-v1.root'),
+    'mc' :   cms.untracked.vstring('file:/eos/user/h/helee/miniAOD_2017_V2/mc/madgraph/F2283B5C-6044-E811-B61D-0025905B859A.root'),
+    'data' : cms.untracked.vstring('file:/eos/user/h/helee/miniAOD_2017_V2/data/F8D7874B-A937-E811-9D5D-008CFAE4535C.root'),
 }
 
 filesMiniAOD_2016 = {
-    'mc' :   cms.untracked.vstring('file:/eos/cms/store/group/phys_egamma/tnpTuples/testFiles/RunIISummer16MiniAODv3-DYJetsToLL_M-50.root'),
-    'data' : cms.untracked.vstring('file:/eos/cms/store/group/phys_egamma/tnpTuples/testFiles/SingleElectron-Run2016B-17Jul2018_ver2-v1.root'),
+    #'mc' :   cms.untracked.vstring('file:/eos/cms/store/group/phys_egamma/tnpTuples/testFiles/RunIISummer16MiniAODv3-DYJetsToLL_M-50.root'),
+    #'data' : cms.untracked.vstring('file:/eos/cms/store/group/phys_egamma/tnpTuples/testFiles/SingleElectron-Run2016B-17Jul2018_ver2-v1.root'),
+    'mc' :   cms.untracked.vstring('file:/eos/user/h/helee/miniAOD_2016_V3/mc/madgraph/DEE4F680-14E9-E811-9CE7-48FD8EE73A8D.root'),
+    'data' : cms.untracked.vstring('file:/eos/user/h/helee/miniAOD_2016_V3/data/52F89FE4-D88B-E811-A095-0CC47A7C3430.root'),
 }
 
 

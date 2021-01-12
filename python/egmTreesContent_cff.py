@@ -131,6 +131,20 @@ EleProbeVariablesToStore = cms.PSet(
     el_eelepout       = cms.string("eEleClusterOverPout()"),
     el_IoEmIop        = cms.InputTag("eleVarHelper:ioemiop"),
 
+    # For typeI
+    el_relEcalIso         = cms.InputTag("eleVarHelper:relEcalIso"),
+    el_relHcalIso         = cms.InputTag("eleVarHelper:relHcalIso"),
+    el_relTrkIso          = cms.InputTag("eleVarHelper:relTrkIso"),
+    el_ip2D               = cms.InputTag("eleVarHelper:ip2D"),
+    el_ipDZ               = cms.InputTag("eleVarHelper:ipDZ"),
+    el_sip2D              = cms.InputTag("eleVarHelper:sip2D"),
+    el_isPOGIP            = cms.InputTag("eleVarHelper:isPOGIP"),
+    el_isPOGIP2D          = cms.InputTag("eleVarHelper:isPOGIP2D"),
+    el_idCutForTrigger    = cms.InputTag("eleVarHelper:idCutForTrigger"),
+    el_isoCutForTrigger   = cms.InputTag("eleVarHelper:isoCutForTrigger"),
+    el_isTightChargePt200 = cms.InputTag("eleVarHelper:isTightChargePt200"),
+    el_isTightChargePt250 = cms.InputTag("eleVarHelper:isTightChargePt250"),
+    el_isTightChargePt300 = cms.InputTag("eleVarHelper:isTightChargePt300"),
     )
 
 PhoProbeVariablesToStore = cms.PSet(
@@ -201,7 +215,7 @@ TagVariablesToStore = cms.PSet(
 #    Ele_mHits         = cms.InputTag("eleVarHelper:missinghits"),
     Ele_dz            = cms.InputTag("eleVarHelper:dz"),
     Ele_dxy           = cms.InputTag("eleVarHelper:dxy"),
-    el_sip           = cms.InputTag("eleVarHelper:sip"),
+    Ele_sip           = cms.InputTag("eleVarHelper:sip"),
     Ele_nonTrigMVA80X    = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring16GeneralPurposeV1Values"),
     Ele_hzzMVA80X    = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring16HZZV1Values"),
 
@@ -211,6 +225,26 @@ TagVariablesToStore = cms.PSet(
     Ele_IsoMVA94X   = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Fall17IsoV1Values"),
     Ele_noIsoMVA94XV2   = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Fall17NoIsoV2Values"), 
     Ele_IsoMVA94XV2   = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Fall17IsoV2Values"),
+
+    ## For typeI
+    Ele_5x5_sieie     = cms.string("full5x5_showerShape().sigmaIetaIeta"),
+    Ele_hoe           = cms.string("hadronicOverEm()"),
+    Ele_1overEminus1overP        = cms.string("abs(1-eSuperClusterOverP())/ecalEnergy()"),
+    Ele_dEtaSeed      = cms.string("deltaEtaSuperClusterTrackAtVtx+log(tan(superCluster.position.theta/2))-log(tan(superCluster.seed.position.theta/2))"),
+    Ele_dPhiIn        = cms.string("deltaPhiSuperClusterTrackAtVtx"),
+    Ele_relEcalIso    = cms.InputTag("eleVarHelper:relEcalIso"),
+    Ele_relHcalIso    = cms.InputTag("eleVarHelper:relHcalIso"),
+    Ele_relTrkIso     = cms.InputTag("eleVarHelper:relTrkIso"),
+    Ele_ip2D          = cms.InputTag("eleVarHelper:ip2D"),
+    Ele_ipDZ          = cms.InputTag("eleVarHelper:ipDZ"),
+    Ele_sip2D         = cms.InputTag("eleVarHelper:sip2D"),
+    Ele_isPOGIP            = cms.InputTag("eleVarHelper:isPOGIP"),
+    Ele_isPOGIP2D          = cms.InputTag("eleVarHelper:isPOGIP2D"),
+    Ele_idCutForTrigger    = cms.InputTag("eleVarHelper:idCutForTrigger"),
+    Ele_isoCutForTrigger   = cms.InputTag("eleVarHelper:isoCutForTrigger"),
+    Ele_isTightChargePt200 = cms.InputTag("eleVarHelper:isTightChargePt200"),
+    Ele_isTightChargePt250 = cms.InputTag("eleVarHelper:isTightChargePt250"),
+    Ele_isTightChargePt300 = cms.InputTag("eleVarHelper:isTightChargePt300"),
     )
 
 CommonStuffForGsfElectronProbe = cms.PSet(
